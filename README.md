@@ -30,5 +30,5 @@ To connect local MCP clients (like Claude Desktop) to the QC MCP Server, add the
  To log to the `mcp-server-quantconnect.log` file, `import sys` and then `print("Hello world", file=sys.stderr)`.
 
 ### Inspector
- To start the inspector, run `npx @modelcontextprotocol/inspector uv run main.py`.
+ To start the inspector, run `npx @modelcontextprotocol/inspector uv run src/main.py`.
  To pass a model to the inspector tool, use JSON (for example, `{"name":"My Project","language":"Py"}`).
