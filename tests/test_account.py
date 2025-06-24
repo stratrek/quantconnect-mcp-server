@@ -10,5 +10,7 @@ class TestAccount:
     @pytest.mark.asyncio
     async def test_read_account(self):
         result = await mcp.call_tool('read_account', {})
+        print('START********')
         print(result)
+        print('END********')
         assert AccountResponse.model_validate(loads(result[0].text))
