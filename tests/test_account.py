@@ -10,7 +10,7 @@ class TestAccount:
 
     @pytest.mark.asyncio
     async def test_read_account(self):
-        assert False os.getenv('QUANTCONNECT_USER_ID')
+        assert False, os.getenv('QUANTCONNECT_USER_ID')
         result = await mcp.call_tool('read_account', {})
         assert result[0].success, result
         assert AccountResponse.model_validate(loads(result[0].text))
