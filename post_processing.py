@@ -20,7 +20,7 @@ content = content.replace('__root__', 'RootModel').replace('ResponseModel', 'Res
 # `model_config = ConfigDict(extra='forbid')`
 # to avoid warnings when running pytest.
 content = content.replace('class Config:', "model_config = ConfigDict(extra='forbid')")\
-    .replace('        extra = Extra.forbid': '')
+    .replace('    extra = Extra.forbid', '')
 
 # Save the new file content.
 with open(path, 'w', encoding='utf-8') as file:
