@@ -31,7 +31,7 @@ jobs:
           if [[ $(git diff | wc -m) == 0 ]]; then
             exit 0
           fi
-          BRANCH=github-action-seo-image-creator
+          BRANCH=pydantic_model_generator
           git config user.name GitHub Actions
           git config user.email github-actions@github.com
           git checkout -b $BRANCH
