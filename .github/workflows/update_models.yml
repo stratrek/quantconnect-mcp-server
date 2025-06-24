@@ -14,14 +14,15 @@ jobs:
       - name: Install dependencies
         run: |-
           python -m pip install --upgrade pip
-          pip install datamodel-code-generator[http]==0.31.2
+          pip install datamodel-code-generator==0.31.2
 
       - name: Free space
         run: df -h && rm -rf /opt/hostedtoolcache* && df -h
 
       - name: Update models
         run: |-
-          datamodel-codegen --url https://raw.githubusercontent.com/QuantConnect/Documentation/refs/heads/MCP-test/QuantConnect-Platform-2.0.0.yaml --input-file-type openapi --output src/models.py --remove-special-field-name-prefix --use-annotated --collapse-root-models --use-default-kwarg
+          curl -O https://raw.githubusercontent.com/QuantConnect/Documentation/refs/heads/MCP-test/QuantConnect-Platform-2.0.0.yaml
+          datamodel-codegen --url QuantConnect-Platform-2.0.0.yaml --input-file-type openapi --output src/models.py --remove-special-field-name-prefix --use-annotated --collapse-root-models --use-default-kwarg
           python post_processing.py
 
       - name: Push to Branch
