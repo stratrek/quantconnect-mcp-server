@@ -11,5 +11,6 @@ class TestAccount:
     @pytest.mark.asyncio
     async def test_read_account(self):
         result = await mcp.call_tool('read_account', {})
-        assert result.success, str(result)
-        assert AccountResponse.model_validate(loads(result[0].text))
+        result = loads(result[0])
+        assert result.success, result
+        assert AccountResponse.model_validate(loads(result.text)), 'Failed Pydantic conversion'
