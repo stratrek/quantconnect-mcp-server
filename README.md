@@ -13,7 +13,7 @@ To connect local MCP clients (like Claude Desktop) to the QC MCP Server, add the
         "--directory",
         "your\\path\\to\\quantconnect\\mcp-server",
         "run",
-        "src/main.py"
+        "src\\main.py"
       ],
       "env": {
         "QUANTCONNECT_USER_ID": <your_user_id>,
