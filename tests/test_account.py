@@ -10,6 +10,7 @@ class TestAccount:
     @pytest.mark.asyncio
     async def test_read_account(self):
         result = await mcp.call_tool('read_account', {})
+        assert result[0].success
         assert False, str(result)
         print('START********')
         print(result)
