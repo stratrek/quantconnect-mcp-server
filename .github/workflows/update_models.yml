@@ -22,7 +22,7 @@ jobs:
       - name: Update models
         run: |-
           curl -O https://raw.githubusercontent.com/QuantConnect/Documentation/refs/heads/MCP-test/QuantConnect-Platform-2.0.0.yaml
-          datamodel-codegen --url .\QuantConnect-Platform-2.0.0.yaml --input-file-type openapi --output src/models.py --remove-special-field-name-prefix --use-annotated --collapse-root-models --use-default-kwarg
+          datamodel-codegen --input QuantConnect-Platform-2.0.0.yaml --input-file-type openapi --output src/models.py --remove-special-field-name-prefix --use-annotated --collapse-root-models --use-default-kwarg
           python post_processing.py
 
       - name: Push to Branch
