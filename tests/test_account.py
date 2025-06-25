@@ -4,7 +4,6 @@ from json import loads
 from main import mcp
 from models import AccountResponse
 
-import os
 
 class TestAccount:
 
