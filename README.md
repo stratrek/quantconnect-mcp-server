@@ -1,6 +1,10 @@
 # mcp-server
 Python MCP server for local interactions with the QuantConnect API. 
 
+## Available Tools (1)
+| Tools provided by this Server    | Short Description |
+| -------- | ------- |
+| `read_account`  | Read the organization account status.    |
 
 ## Configuration Examples
 To connect local MCP clients (like Claude Desktop) to the QC MCP Server, follow these steps:
