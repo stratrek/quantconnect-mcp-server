@@ -1,5 +1,5 @@
 [project]
-name = "QuantConnect MCP server"
+name = "mcp-server"
 version = "0.1.0"
 description = "Python MCP server for local interactions with the QuantConnect API."
 readme = "README.md"
