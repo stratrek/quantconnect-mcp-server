@@ -12,6 +12,3 @@ dependencies = [
 
 [tool.pytest.ini_options]
 pythonpath = "src"
-
-[tool.uv]
-no-project = true  # Skip installing the project as a package
