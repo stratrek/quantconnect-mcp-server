@@ -31,5 +31,5 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/mcp-server:${{ github.sha }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/mcp-server:latest
+            quantconnect/mcp-server:${{ github.sha }}
+            quantconnect/mcp-server:latest
