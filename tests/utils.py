@@ -12,9 +12,9 @@ async def validate_models(
     else:
         input_model = {}
     result = await mcp.call_tool(tool_name, input_model)
-    output_args = loads(result[0].text)
-    assert output_args['success'], output_args
-    return output_class.model_validate(output_args)
+    output_json = loads(result[0].text)
+    assert output_json['success'], output_json
+    return output_class.model_validate(output_json)
 
 async def raises_validation_error(tool_name, args, cls):
     with pytest.raises(ValidationError) as error:
