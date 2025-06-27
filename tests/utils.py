@@ -1,20 +1,22 @@
 import pytest
+import jsonschema
 from json import loads
 from pydantic import ValidationError
 
-async def validate_models(
-        mcp, tool_name, input_args={}, input_class=None, output_class=None):
-    if input_class:
-        # The following line ensures we can convert the input dict to 
-        # the input Pydantic model. If required arguments are missing 
-        # or arguments are invalid, it raises an exception.
-        input_model = input_class.model_validate(input_args)
-    else:
-        input_model = {}
-    result = await mcp.call_tool(tool_name, input_model)
-    output_json = loads(result[0].text)
-    assert output_json['success'], output_json
-    return output_class.model_validate(output_json)
+async def validate_models(mcp, tool_name, input_args={}, output_class=None):
+    # Run the tool. If the input args are invalid, it raises an error.
+    result = await mcp.call_tool(tool_name, input_args) # a tuple
+    text_contents = result[0] # A list of TextContent objects
+    structured_response = result[1]
+    # Check if the response has the success flag.
+    assert loads(text_contents[0].text)['success'], 'Request failed'    
+    # Check if the response schema is valid JSON.
+    jsonschema.validate(
+        instance=structured_response, 
+        schema=mcp._tool_manager.get_tool(tool_name).fn_metadata.output_schema
+    )
+    # Create and return the output model.
+    return output_class.model_validate(structured_response)
 
 async def raises_validation_error(tool_name, args, cls):
     with pytest.raises(ValidationError) as error:
