@@ -5,6 +5,12 @@ Python MCP server for local interactions with the QuantConnect API.
 | Tools provided by this Server    | Short Description |
 | -------- | ------- |
 | `read_account`  | Read the organization account status.    |
+| `create_project`  | Create a new project in your default organization. |
+| `read_project`  | List the details of a project. |
+| `update_project`  | Update a project's name or description. |
+| `delete_project`  | Delete a project. |
+| `list_projects`  | List the details of all projects. |
+
 
 ## Configuration Examples
 To connect local MCP clients (like Claude Desktop) to the QC MCP Server, follow these steps:
