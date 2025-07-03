@@ -20,6 +20,8 @@ from models import (
     DeleteCollaboratorResponse
 )
 
+COLLABORATOR_ID = os.getenv('QUANTCONNECT_COLLABORATOR_ID')
+
 
 class ProjectCollaboration:
 
@@ -75,8 +77,6 @@ class ProjectCollaboration:
 # Test suite:
 class TestProjectCollaboration:
 
-    _collaborator_id = os.getenv('QUANTCONNECT_COLLABORATOR_ID')
-
     @pytest.mark.asyncio
     @pytest.mark.parametrize('language', ['Py', 'C#'])
     @pytest.mark.parametrize('collaboration_live_control', [True, False])
@@ -88,23 +88,23 @@ class TestProjectCollaboration:
         # Add a collaborator.
         collaborators = await ProjectCollaboration.create(
             project_id, 
-            self._collaborator_id, 
+            COLLABORATOR_ID, 
             collaboration_live_control,
             collaboration_write
         )
         # Test if the collaborator was added.
         assert len(collaborators) == 2
         assert any(
-            [c.publicId == self._collaborator_id for c in collaborators]
+            [c.publicId == COLLABORATOR_ID for c in collaborators]
         )
         # Test if the live control and write permissions are right.
         permission = 'write' if collaboration_write else 'read'
         for c in collaborators:
-            if c.publicId == self._collaborator_id:
+            if c.publicId == COLLABORATOR_ID:
                 assert c.liveControl == collaboration_live_control
                 assert c.permission.value == permission
         # Remove the collaborators and delete the project to clean up.
-        await ProjectCollaboration.delete(project_id, self._collaborator_id)
+        await ProjectCollaboration.delete(project_id, COLLABORATOR_ID)
         await Project.delete(project_id)
 
     @pytest.mark.asyncio
@@ -116,7 +116,7 @@ class TestProjectCollaboration:
             mcp, 'create_project_collaborator', CreateCollaboratorRequest,
             {
                 'projectId': project_id,
-                'collaboratorUserId': self._collaborator_id,
+                'collaboratorUserId': COLLABORATOR_ID,
                 'collaborationLiveControl': True,
                 'collaborationWrite': True
             },
@@ -138,17 +138,17 @@ class TestProjectCollaboration:
         project_id = (await Project.create()).projectId
         # Add a collaborator.
         await ProjectCollaboration.create(
-            project_id, self._collaborator_id, True, True
+            project_id, COLLABORATOR_ID, True, True
         )
         # Read the collaborator information of this project.
         collaborators = await ProjectCollaboration.read(project_id)
         # Test if the collaborator was added.
         assert len(collaborators) == 2
         assert any(
-           [c.publicId == self._collaborator_id for c in collaborators]
+           [c.publicId == COLLABORATOR_ID for c in collaborators]
         )
         # Remove the collaborators and delete the project to clean up.
-        await ProjectCollaboration.delete(project_id, self._collaborator_id)
+        await ProjectCollaboration.delete(project_id, COLLABORATOR_ID)
         await Project.delete(project_id)
 
     @pytest.mark.asyncio
@@ -166,20 +166,20 @@ class TestProjectCollaboration:
         project_id = (await Project.create()).projectId
         # Add a collaborator.
         await ProjectCollaboration.create(
-            project_id, self._collaborator_id, True, True
+            project_id, COLLABORATOR_ID, True, True
         )
         # Update the collaborator live control and write permissions.
         collaborators = await ProjectCollaboration.update(
-            project_id, self._collaborator_id, False, False
+            project_id, COLLABORATOR_ID, False, False
         )
         # Test if the update worked.
         assert len(collaborators) == 2
         for c in collaborators:
-            if c.publicId == self._collaborator_id:
+            if c.publicId == COLLABORATOR_ID:
                 assert not c.liveControl
                 assert c.permission.value == 'read'
         # Remove the collaborators and delete the project to clean up.
-        await ProjectCollaboration.delete(project_id, self._collaborator_id)
+        await ProjectCollaboration.delete(project_id, COLLABORATOR_ID)
         await Project.delete(project_id)
 
     @pytest.mark.asyncio
@@ -188,14 +188,14 @@ class TestProjectCollaboration:
         project_id = (await Project.create()).projectId
         # Add a collaborator.
         await ProjectCollaboration.create(
-            project_id, self._collaborator_id, True, True
+            project_id, COLLABORATOR_ID, True, True
         )
         # Test the invalid requests.
         await send_request_with_invalid_args(
             mcp, 'update_project_collaborator', UpdateCollaboratorRequest,
             {
                 'projectId': project_id,
-                'collaboratorUserId': self._collaborator_id,
+                'collaboratorUserId': COLLABORATOR_ID,
                 'liveControl': True,
                 'write': True
             },
@@ -209,7 +209,7 @@ class TestProjectCollaboration:
             ]
         )
         # Remove the collaborators and delete the project to clean up.
-        await ProjectCollaboration.delete(project_id, self._collaborator_id)
+        await ProjectCollaboration.delete(project_id, COLLABORATOR_ID)
         await Project.delete(project_id)
 
     @pytest.mark.asyncio
@@ -218,14 +218,14 @@ class TestProjectCollaboration:
         project_id = (await Project.create()).projectId
         # Add a collaborator.
         await ProjectCollaboration.create(
-            project_id, self._collaborator_id, True, True
+            project_id, COLLABORATOR_ID, True, True
         )
         # Test the invalid requests.
         await send_request_with_invalid_args(
             mcp, 'delete_project_collaborator', DeleteCollaboratorRequest,
             {
                 'projectId': project_id,
-                'collaboratorId': self._collaborator_id
+                'collaboratorId': COLLABORATOR_ID
             },
             [
                 # Try to delete a collaborator on a project that 
@@ -237,5 +237,5 @@ class TestProjectCollaboration:
             ]
         )
         # Remove the collaborators and delete the project to clean up.
-        await ProjectCollaboration.delete(project_id, self._collaborator_id)
+        await ProjectCollaboration.delete(project_id, COLLABORATOR_ID)
         await Project.delete(project_id)
