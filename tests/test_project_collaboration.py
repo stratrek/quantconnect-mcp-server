@@ -20,9 +20,9 @@ from models import (
     DeleteCollaboratorResponse
 )
 
-COLLABORATOR_ID = os.getenv('QUANTCONNECT_COLLABORATOR_ID')
-if COLLABORATOR_ID is None:
-    raise Exception("COLLABORATOR_ID is None")
+#COLLABORATOR_ID = os.getenv('QUANTCONNECT_COLLABORATOR_ID')
+#if COLLABORATOR_ID is None:
+#    raise Exception("COLLABORATOR_ID is None")
 
 class ProjectCollaboration:
 
@@ -78,7 +78,7 @@ class ProjectCollaboration:
 # Test suite:
 class TestProjectCollaboration:
 
-    _collaborator_id = COLLABORATOR_ID#os.getenv('QUANTCONNECT_COLLABORATOR_ID')
+    _collaborator_id = os.getenv('QUANTCONNECT_COLLABORATOR_ID')
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize('language', ['Py', 'C#'])
@@ -86,7 +86,9 @@ class TestProjectCollaboration:
     @pytest.mark.parametrize('collaboration_write', [True, False])
     async def test_create_project_collaboration(
             self, language, collaboration_live_control, collaboration_write):
-        self._collaborator_id = COLLABORATOR_ID
+        if self._collaborator_id is None:
+            if os.getenv('QUANTCONNECT_COLLABORATOR_ID') is None:
+                raise Exception("Everything is None")
         # Create a project.
         project_id = (await Project.create(language=language)).projectId
         # Add a collaborator.
