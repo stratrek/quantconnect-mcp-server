@@ -23,9 +23,9 @@ from models import (
 COLLABORATOR_ID = os.getenv('QUANTCONNECT_COLLABORATOR_ID')
 
 
+# Static helpers for common operations:
 class ProjectCollaboration:
 
-    # Static helpers for common operations:
     @staticmethod
     async def create(
             project_id, collaborator_id, collaboration_live_control,
