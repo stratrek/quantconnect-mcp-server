@@ -21,6 +21,8 @@ from models import (
 )
 
 COLLABORATOR_ID = os.getenv('QUANTCONNECT_COLLABORATOR_ID')
+if COLLABORATOR_ID is None:
+    raise Exception("COLLABORATOR_ID is None")
 
 class ProjectCollaboration:
 
