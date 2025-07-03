@@ -75,7 +75,7 @@ class ProjectCollaboration:
 # Test suite:
 class TestProjectCollaboration:
 
-    _collaborator_id = os.getenv('QUANTCONNECT_COLLABORATOR_ID', 'alexandre_catarino')
+    _collaborator_id = os.getenv('QUANTCONNECT_COLLABORATOR_ID')
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize('language', ['Py', 'C#'])
