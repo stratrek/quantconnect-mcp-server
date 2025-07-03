@@ -83,6 +83,7 @@ class TestProjectCollaboration:
     @pytest.mark.parametrize('collaboration_write', [True, False])
     async def test_create_project_collaboration(
             self, language, collaboration_live_control, collaboration_write):
+        self._collaborator_id = os.getenv('QUANTCONNECT_COLLABORATOR_ID')
         # Create a project.
         project_id = (await Project.create(language=language)).projectId
         # Add a collaborator.
