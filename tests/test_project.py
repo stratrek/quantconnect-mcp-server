@@ -4,7 +4,9 @@ import functools
 from main import mcp
 from utils import (
     validate_models, 
-    raises_validation_error, 
+    ensure_request_fails, 
+    ensure_request_raises_validation_error,
+    ensure_request_raises_validation_error_when_omitting_an_arg,
     create_timestamp,
 )
 from models import (
@@ -48,7 +50,7 @@ class Project:
         )
 
     @staticmethod
-    async def list_():
+    async def list():
         output_model = await validate_models(
             mcp, 'list_projects', output_class=ProjectListResponse
         )
@@ -70,18 +72,17 @@ class TestProject:
         await Project.delete(project.projectId)
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize(
-        'args',
-        [
-            # Case 1: Missing a required property (`language`)
-            {'name': 'Test Project'},
-            # Case 2: Invalid property value (`language`)
-            {'name': 'Test Project', 'language': 'C++'},
-        ]
-    )
-    async def test_create_project_with_request_validation_errors(self, args):
-        await raises_validation_error(
-            'create_project', args, CreateProjectRequest
+    async def test_create_project_with_invalid_args(self):
+        tool_name = 'create_project'
+        request_class = CreateProjectRequest
+        minimal_payload = {'name': 'Test Project', 'language': 'Py'}
+        # Try to create a project without providing all the arguments.
+        await ensure_request_raises_validation_error_when_omitting_an_arg(
+            tool_name, request_class, minimal_payload
+        )
+        # Try to create a project with an unsupported language.
+        await ensure_request_raises_validation_error(
+            tool_name, request_class, minimal_payload | {'language': 'C++'}
         )
 
     @pytest.mark.asyncio
@@ -101,10 +102,7 @@ class TestProject:
     @pytest.mark.asyncio
     async def test_read_project_with_invalid_args(self):
         # Try to read a project that doesn't exist.
-        await validate_models(
-            mcp, 'read_project', {'projectId': -1}, 
-            ReadProjectRequest, False
-        )
+        await ensure_request_fails(mcp, 'read_project', {'projectId': -1})
 
     @pytest.mark.asyncio
     async def test_update_project(self):
@@ -147,9 +145,8 @@ class TestProject:
         name_2 = f"Project {create_timestamp()}"
         id_2 = (await Project.create(name_2)).projectId
         # Try updating the project names to match.
-        await validate_models(
-            mcp, 'update_project', {'projectId': id_2, 'name': name_1}, 
-            UpdateProjectRequest, False
+        await ensure_request_fails(
+            mcp, 'update_project', {'projectId': id_2, 'name': name_1}
         )
         # Delete the projects.
         await Project.delete(id_1)
@@ -158,12 +155,8 @@ class TestProject:
     @pytest.mark.asyncio
     async def test_delete_projects_with_invalid_args(self):
         # Try to delete a project that doesn't exist.
-        await validate_models(
-            mcp, 'delete_project', {'projectId': -1}, 
-            DeleteProjectRequest, False
-        )
+        await ensure_request_fails(mcp, 'delete_project', {'projectId': -1})
 
     @pytest.mark.asyncio
     async def test_list_projects(self):
-        await Project.list_()
-        
+        await Project.list()
