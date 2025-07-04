@@ -3,7 +3,12 @@ import os
 
 from main import mcp
 from test_project import Project
-from utils import validate_models, send_request_with_invalid_args
+from utils import (
+    validate_models, 
+    ensure_request_fails,
+    ensure_request_raises_validation_error_when_omitting_an_arg,
+    ensure_request_fails_when_including_an_invalid_arg
+)
 from models import (
     CreateCollaboratorRequest,
     ReadCollaboratorsRequest,
@@ -107,15 +112,18 @@ class TestProjectCollaboration:
         # Create a project.
         project_id = (await Project.create()).projectId
         # Test the invalid requests.
-        await send_request_with_invalid_args(
-            mcp, 'create_project_collaborator', CreateCollaboratorRequest,
-            {
-                'projectId': project_id,
-                'collaboratorUserId': COLLABORATOR_ID,
-                'collaborationLiveControl': True,
-                'collaborationWrite': True
-            },
-            [
+        tool_name = 'create_project_collaborator'
+        minimal_payload = {
+            'projectId': project_id,
+            'collaboratorUserId': COLLABORATOR_ID,
+            'collaborationLiveControl': True,
+            'collaborationWrite': True
+        }
+        await ensure_request_raises_validation_error_when_omitting_an_arg(
+            tool_name, CreateCollaboratorRequest, minimal_payload
+        )
+        await ensure_request_fails_when_including_an_invalid_arg(
+            mcp, tool_name, minimal_payload, [
                 # Try to add a collaborator to a project that doesn't 
                 # exist.
                 {'projectId': -1},
@@ -150,9 +158,8 @@ class TestProjectCollaboration:
     async def test_read_project_collaboration_with_invalid_args(self):
         # Try to read the collaborator information for a project that 
         # doesn't exist.
-        await validate_models(
-            mcp, 'read_project_collaborators', {'projectId': -1}, 
-            ReadCollaboratorsRequest, False
+        await ensure_request_fails(
+            mcp, 'read_project_collaborators', {'projectId': -1}
         )
 
     @pytest.mark.asyncio
@@ -186,17 +193,20 @@ class TestProjectCollaboration:
             project_id, COLLABORATOR_ID, True, True
         )
         # Test the invalid requests.
-        await send_request_with_invalid_args(
-            mcp, 'update_project_collaborator', UpdateCollaboratorRequest,
-            {
-                'projectId': project_id,
-                'collaboratorUserId': COLLABORATOR_ID,
-                'liveControl': True,
-                'write': True
-            },
-            [
-                # Try to update a collaborator on a project that 
-                # doesn't exist.
+        tool_name = 'update_project_collaborator'
+        minimal_payload = {
+            'projectId': project_id,
+            'collaboratorUserId': COLLABORATOR_ID,
+            'liveControl': True,
+            'write': True
+        }
+        await ensure_request_raises_validation_error_when_omitting_an_arg(
+            tool_name, UpdateCollaboratorRequest, minimal_payload
+        )
+        await ensure_request_fails_when_including_an_invalid_arg(
+            mcp, tool_name, minimal_payload, [
+                # Try to update a collaborator on a project that doesn't 
+                # exist.
                 {'projectId': -1},
                 # Try to update a collaborator on a project using an 
                 # invalid user Id for the collaborator.
@@ -216,13 +226,16 @@ class TestProjectCollaboration:
             project_id, COLLABORATOR_ID, True, True
         )
         # Test the invalid requests.
-        await send_request_with_invalid_args(
-            mcp, 'delete_project_collaborator', DeleteCollaboratorRequest,
-            {
-                'projectId': project_id,
-                'collaboratorId': COLLABORATOR_ID
-            },
-            [
+        tool_name = 'delete_project_collaborator'
+        minimal_payload = {
+            'projectId': project_id,
+            'collaboratorId': COLLABORATOR_ID
+        }
+        await ensure_request_raises_validation_error_when_omitting_an_arg(
+            tool_name, DeleteCollaboratorRequest, minimal_payload
+        )
+        await ensure_request_fails_when_including_an_invalid_arg(
+            mcp, tool_name, minimal_payload, [
                 # Try to delete a collaborator on a project that 
                 # doesn't exist.
                 {'projectId': -1},
