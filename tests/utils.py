@@ -25,26 +25,38 @@ async def validate_models(
     # Create and return the output model.
     return output_class.model_validate(structured_response)
 
-async def raises_validation_error(tool_name, args, class_):
+async def ensure_request_fails(mcp, tool_name, input_args={}):
+    # The input_args should be valid for the Pydantic model conversion,
+    # but should be invalid for the API.
+    await validate_models(
+        mcp, tool_name, input_args, success_expected=False
+    )
+
+async def ensure_request_raises_validation_error(tool_name, class_, args):
     with pytest.raises(ValidationError) as error:
         class_.model_validate(args)
     assert error.type is ValidationError
 
-async def send_request_with_invalid_args(
-        mcp, tool_name, class_, payload, invalid_arguments):
-    # Try to send the request without providing all the required 
-    # arguments.
-    for key in payload:
-        await raises_validation_error(
-            tool_name, 
-            {k: v for k, v in payload.items() if k != key}, 
-            class_
+async def ensure_request_raises_validation_error_when_omitting_an_arg(
+        tool_name, class_, minimal_payload):
+    # This test ensures that if we omit one of the arguments from the
+    # `minimal_payload`, the payload doesn't respect the required 
+    # properties of the Pydantic model (`class_`). If the YAML is 
+    # updated so that the required properties of the model are 
+    # adjusted, this test will fail and we'll be informed of the 
+    # change.
+    class_.model_validate(minimal_payload)
+    for key in minimal_payload:
+        await ensure_request_raises_validation_error(
+            tool_name, class_, 
+            {k: v for k, v in minimal_payload.items() if k != key}
         )
+
+async def ensure_request_fails_when_including_an_invalid_arg(
+        mcp, tool_name, minimal_payload, invalid_arguments):
     # Try to send the request with an invalid argument.
     for arg in invalid_arguments:
-        await validate_models(
-            mcp, tool_name, payload | arg, class_, False
-        )
+        await ensure_request_fails(mcp, tool_name, minimal_payload | arg)
 
 def create_timestamp():
     return datetime.now().strftime('%Y%m%d_%H%M%S_%f')
