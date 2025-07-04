@@ -44,7 +44,7 @@ class Compile:
         while attempts < 5:
             attempts += 1
             response = await Compile.read(project_id, compile_id)
-            if response.state != 'InQueue':
+            if response.state.value != 'InQueue':
                 return response
             sleep(2)
         assert False, "Compile job stuck in queue."
