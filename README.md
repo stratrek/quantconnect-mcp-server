@@ -1,7 +1,7 @@
 # mcp-server
 Python MCP server for local interactions with the QuantConnect API. 
 
-## Available Tools (10)
+## Available Tools (12)
 | Tools provided by this Server | Short Description |
 | -------- | ------- |
 | `read_account` | Read the organization account status. |
@@ -14,6 +14,8 @@ Python MCP server for local interactions with the QuantConnect API.
 | `read_project_collaborators` | List all collaborators on a project. |
 | `update_project_collaborator` | Update collaborator information in a project. |
 | `delete_project_collaborator` | Remove a collaborator from a project. |
+| `read_project_nodes` | Read the available and selected nodes of a project. |
+| `update_project_nodes` | Update the active state of the given nodes to true. |
 
 
 ## Configuration Examples
