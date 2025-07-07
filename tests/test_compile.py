@@ -1,5 +1,4 @@
 import pytest
-import functools
 from time import sleep
 
 from main import mcp
