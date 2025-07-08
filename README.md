@@ -1,7 +1,7 @@
 # mcp-server
 Python MCP server for local interactions with the QuantConnect API. 
 
-## Available Tools (14)
+## Available Tools (19)
 | Tools provided by this Server | Short Description |
 | -------- | ------- |
 | `read_account` | Read the organization account status. |
@@ -18,6 +18,11 @@ Python MCP server for local interactions with the QuantConnect API.
 | `update_project_nodes` | Update the active state of the given nodes to true. |
 | `create_compile` | Asynchronously create a compile job request for a project. |
 | `read_compile` | Read a compile packet job result. |
+| `create_file` | Add a file to a given project. |
+| `read_file` | Read a file from a project, or all files in the project if no file name is provided. |
+| `update_file_name` | Update the name of a file. |
+| `update_file_contents` | Update the contents of a file. |
+| `delete_file` | Delete a file in a project. |
 
 
 ## Configuration Examples
