@@ -1,5 +1,4 @@
 import pytest
-import functools
 
 from main import mcp
 from utils import (
