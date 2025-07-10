@@ -39,7 +39,7 @@ async def post(endpoint: str, model: object = None):
             f'https://www.quantconnect.com/api/v2{endpoint}', 
             headers=get_headers(), 
             json=to_jsonable_python(model, exclude_none=True) if model else {}, 
-            timeout=10.0
+            timeout=30.0
         )
         response.raise_for_status()
         return response.json()
