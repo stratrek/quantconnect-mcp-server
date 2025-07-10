@@ -233,6 +233,7 @@ class TestBacktest:
         assert backtest.backtestId == backtest_id
         # Start a second backtest.
         compile_id = (await Compile.create(project_id)).compileId
+        await Compile.wait_for_job_to_complete(project_id, compile_id)
         backtest_ids = [
             backtest_id, 
             (await Backtest.create(project_id, compile_id)).backtestId
