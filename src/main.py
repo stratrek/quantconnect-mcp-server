@@ -6,6 +6,7 @@ from tools.project_collaboration import register_project_collaboration_tools
 from tools.project_nodes import register_project_node_tools
 from tools.compile import register_compile_tools
 from tools.files import register_file_tools
+from tools.backtests import register_backtest_tools
 
 # Initialize the FastMCP server.
 mcp = FastMCP('quantconnect', version='0.1.0')
@@ -18,6 +19,7 @@ registration_functions = [
     register_project_node_tools,
     register_compile_tools,
     register_file_tools,
+    register_backtest_tools,
 ]
 for registration_function in registration_functions:
     registration_function(mcp)
