@@ -2,6 +2,7 @@
 from AlgorithmImports import *
 # endregion
 
+
 class ChartTestAlgorithm(QCAlgorithm):
 
     def initialize(self):
