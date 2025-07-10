@@ -4,6 +4,16 @@ from json import loads
 from pydantic import ValidationError
 from datetime import datetime
 
+async def validate_response(
+        mcp, tool_name, structured_response, output_class):
+    # Check if the response schema is valid JSON.
+    jsonschema.validate(
+        instance=structured_response, 
+        schema=mcp._tool_manager.get_tool(tool_name).fn_metadata.output_schema
+    )
+    # Create and return the output model.
+    return output_class.model_validate(structured_response)
+
 async def validate_models(
         mcp, tool_name, input_args={}, output_class=None, 
         success_expected=True):
@@ -16,21 +26,21 @@ async def validate_models(
     assert loads(unstructured_response[0].text)['success'] == success_expected,\
         structured_response
     if not success_expected:
-        return
-    # Check if the response schema is valid JSON.
-    jsonschema.validate(
-        instance=structured_response, 
-        schema=mcp._tool_manager.get_tool(tool_name).fn_metadata.output_schema
+        return structured_response
+    # Check if the response respects the output_class.
+    output_model = await validate_response(
+        mcp, tool_name, structured_response, output_class
     )
-    # Create and return the output model.
-    return output_class.model_validate(structured_response)
+    # Return an instance of the output_class.
+    return output_model
 
 async def ensure_request_fails(mcp, tool_name, input_args={}):
     # The input_args should be valid for the Pydantic model conversion,
     # but should be invalid for the API.
-    await validate_models(
+    structured_response = await validate_models(
         mcp, tool_name, input_args, success_expected=False
     )
+    return structured_response
 
 async def ensure_request_raises_validation_error(tool_name, class_, args):
     with pytest.raises(ValidationError) as error:
