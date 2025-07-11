@@ -1,7 +1,7 @@
 # mcp-server
 Python MCP server for local interactions with the QuantConnect API. 
 
-## Available Tools (19)
+## Available Tools (27)
 | Tools provided by this Server | Short Description |
 | -------- | ------- |
 | `read_account` | Read the organization account status. |
@@ -23,6 +23,14 @@ Python MCP server for local interactions with the QuantConnect API.
 | `update_file_name` | Update the name of a file. |
 | `update_file_contents` | Update the contents of a file. |
 | `delete_file` | Delete a file in a project. |
+| `create_backtest` | Create a new backtest request and get the backtest Id. |
+| `read_backtest` | Read the results of a backtest. |
+| `list_backtests` | List all the backtests for the project. |
+| `read_backtest_chart` | Read a chart from a backtest. |
+| `read_backtest_orders` | Read out the orders of a backtest. |
+| `read_backtest_insights` | Read out the insights of a backtest. |
+| `update_backtest` | Update the name or note of a backtest. |
+| `delete_backtest` | Delete a backtest from a project. |
 
 
 ## Configuration Examples
