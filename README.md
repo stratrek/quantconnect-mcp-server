@@ -1,5 +1,5 @@
 # mcp-server
-Python MCP server for local interactions with the QuantConnect API. 
+Python MCP server for local interactions with the QuantConnect API
 
 ## Available Tools (27)
 | Tools provided by this Server | Short Description |
