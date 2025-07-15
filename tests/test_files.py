@@ -3,6 +3,7 @@ import json
 
 from main import mcp
 from test_project import Project
+from test_compile import Compile
 from test_project_collaboration import ProjectCollaboration, COLLABORATOR_ID
 from utils import (
     validate_models, 
@@ -25,20 +26,18 @@ class Files:
 
     @staticmethod
     async def create(project_id, name, **kwargs):
-        output_model = await validate_models(
+        return await validate_models(
             mcp, 'create_file', 
             {'projectId': project_id, 'name': name} | kwargs,
             ProjectFilesResponse
         )
-        return output_model
 
     @staticmethod
     async def read(project_id, **kwargs):
-        output_model = await validate_models(
+        return await validate_models(
             mcp, 'read_file', {'projectId': project_id} | kwargs, 
             ProjectFilesResponse
         )
-        return output_model
 
     @staticmethod
     async def update(project_id, **kwargs):
@@ -56,11 +55,29 @@ class Files:
 
     @staticmethod
     async def delete(project_id, name):
-        output_model = await validate_models(
+        return await validate_models(
             mcp, 'delete_file', {'projectId': project_id, 'name': name},
             RestResponse
         )
-        return output_model
+
+    @staticmethod
+    async def setup_project(language, algorithm=None):
+        # Create a project.
+        project_id = (await Project.create(language=language)).projectId
+        if algorithm:
+            # Read the algorithm file.
+            with open('tests/algorithms/' + algorithm, 'r') as file:
+                content = file.read()
+            # Update the project to the new algorithm.
+            await Files.update(
+                project_id, 
+                name='main.py' if language == 'Py' else 'Main.cs', 
+                content=content
+            )
+        # Compile the project.
+        compile_id = (await Compile.create(project_id)).compileId
+        await Compile.wait_for_job_to_complete(project_id, compile_id)
+        return project_id, compile_id
 
 
 # Test suite:
