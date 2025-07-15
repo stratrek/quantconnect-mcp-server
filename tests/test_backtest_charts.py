@@ -51,7 +51,7 @@ class TestBacktestCharts:
 
     async def _run_algorithm(self, language, algo):
         # Backtest and algorithm that creates a custom chart.
-        project_id, backtest_id = await Backtest.run_algorithm(project_id, algo)
+        project_id, backtest_id = await Backtest.run_algorithm(language, algo)
         # Return the data we need to read the backtest charts.
         start = 1672531200  # Start Unix time of the backtest.
         end = 1680307200  # End Unix time of the backtest.
