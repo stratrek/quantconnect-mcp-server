@@ -240,6 +240,7 @@ class TestOptimization:
         )
         # Delete the project to clean up.
         await Project.delete(project_id)
+        
     @pytest.mark.asyncio
     @pytest.mark.parametrize('language, algo', TEST_ALGORITHMS)
     async def test_create_optimization(self, language, name, algo):
