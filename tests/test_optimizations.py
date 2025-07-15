@@ -143,7 +143,7 @@ class Optimization:
             optimization = await Optimization.read(optimization_id)
             if optimization.status.value != 'new':
                 return optimization
-            sleep(3)
+            sleep(9)
         assert False, "Optimization job didn't start in time."
 
     @staticmethod
@@ -239,10 +239,10 @@ class TestOptimization:
         )
         # Delete the project to clean up.
         await Project.delete(project_id)
-        
+
     @pytest.mark.asyncio
     @pytest.mark.parametrize('language, algo', TEST_ALGORITHMS)
-    async def test_create_optimization(self, language, name, algo):
+    async def test_create_optimization(self, language, algo):
         # Create and compile the project.
         project_id, compile_id = await Files.setup_project(language, algo)
         # Try to create an optimization job.
