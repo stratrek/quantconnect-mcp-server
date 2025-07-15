@@ -88,33 +88,14 @@ class Backtest:
         assert False, "Backtest job didn't complete in time."
 
     @staticmethod
-    async def run_template_algorithm(language, wait_to_complete=True):
-        # Create a project.
-        project_id = (await Project.create(language=language)).projectId
-        # Compile it.
-        compile_id = (await Compile.create(project_id)).compileId
-        await Compile.wait_for_job_to_complete(project_id, compile_id)
-        # Start the backtest.
-        backtest_id = (await Backtest.create(project_id, compile_id)).backtestId
-        if wait_to_complete:
-            await Backtest.wait_for_job_to_complete(project_id, backtest_id)
-        return project_id, backtest_id
-
-    @staticmethod
-    async def run_algorithm(project_id, name, algo, wait_to_complete=True):
-        # Read the algorithm file.
-        with open('tests/algorithms/' + algo, 'r') as file:
-            content = file.read()
-        # Update the project to the new algorithm.
-        await Files.update(project_id, name=name, content=content)
-        # Compile it.
-        compile_id = (await Compile.create(project_id)).compileId
-        await Compile.wait_for_job_to_complete(project_id, compile_id)
+    async def run_algorithm(language, algo=None, wait_to_complete=True):
+        # Create and compile the project.
+        project_id, compile_id = await Files.setup_project(language, algo)
         # Run the backtest.
         backtest_id = (await Backtest.create(project_id, compile_id)).backtestId
         if wait_to_complete:
             await Backtest.wait_for_job_to_complete(project_id, backtest_id)
-        return backtest_id
+        return project_id, backtest_id
 
 
 # Test suite:
@@ -123,11 +104,8 @@ class TestBacktest:
     @pytest.mark.asyncio
     @pytest.mark.parametrize('language', ['Py', 'C#'])
     async def test_create_backtest(self, language):
-        # Create a project.
-        project_id = (await Project.create(language=language)).projectId
-        # Compile the project.
-        compile_id = (await Compile.create(project_id)).compileId
-        await Compile.wait_for_job_to_complete(project_id, compile_id)
+        # Create and compile the project.
+        project_id, compile_id = await Files.setup_project(language)
         # Try to run the backtest.
         name = 'Test Backtest'
         backtest = await Backtest.create(project_id, compile_id, name)
@@ -145,10 +123,8 @@ class TestBacktest:
     @pytest.mark.asyncio
     @pytest.mark.parametrize('language', ['Py', 'C#'])
     async def test_create_backtest_with_invalid_args(self, language):
-        # Create a project and complie it.
-        project_id = (await Project.create(language=language)).projectId
-        compile_id = (await Compile.create(project_id)).compileId
-        await Compile.wait_for_job_to_complete(project_id, compile_id)
+        # Create and compile the project.
+        project_id, compile_id = await Files.setup_project(language)
         # Test the invalid requests.
         tool_name = 'create_backtest'
         class_ = CreateBacktestRequest
@@ -181,10 +157,9 @@ class TestBacktest:
     @pytest.mark.asyncio
     @pytest.mark.parametrize('language', ['Py', 'C#'])
     async def test_read_backtest(self, language):
+        # Create and compile the project.
+        project_id, compile_id = await Files.setup_project(language)
         # Start a backtest.
-        project_id = (await Project.create(language=language)).projectId
-        compile_id = (await Compile.create(project_id)).compileId
-        await Compile.wait_for_job_to_complete(project_id, compile_id)
         parameters = {'a': 0, 'b': 0.0, 'c': 'foo'}
         backtest = await Backtest.create(
             project_id, compile_id, parameters=parameters
@@ -202,9 +177,7 @@ class TestBacktest:
     @pytest.mark.parametrize('language', ['Py', 'C#'])
     async def test_read_backtest_with_invalid_args(self, language):
         # Start a backtest.
-        project_id, backtest_id = (
-            await Backtest.run_template_algorithm(language)
-        )
+        project_id, backtest_id = await Backtest.run_algorithm(language)
         # Test the invalid requests.
         tool_name = 'read_backtest'
         class_ = ReadBacktestRequest
@@ -223,9 +196,7 @@ class TestBacktest:
     @pytest.mark.parametrize('language', ['Py', 'C#'])
     async def test_list_backtests(self, language):
         # Start a backtest.
-        project_id, backtest_id = (
-            await Backtest.run_template_algorithm(language)
-        )
+        project_id, backtest_id = await Backtest.run_algorithm(language)
         # Try to list all the backtest when there is just 1 backtest.
         backtests = await Backtest.list(project_id)
         assert len(backtests) == 1
@@ -273,8 +244,8 @@ class TestBacktest:
     @pytest.mark.parametrize('language', ['Py', 'C#'])
     async def test_update_backtest(self, language):
         # Start a backtest.
-        project_id, backtest_id = (
-            await Backtest.run_template_algorithm(language, False)
+        project_id, backtest_id = await Backtest.run_algorithm(
+            language, wait_to_complete=False
         )
         # Try to update the backtest name and note.
         name = 'new name'
@@ -290,8 +261,8 @@ class TestBacktest:
     @pytest.mark.parametrize('language', ['Py', 'C#'])
     async def test_update_backtest_with_invalid_args(self, language):
         # Start a backtest.
-        project_id, backtest_id = (
-            await Backtest.run_template_algorithm(language, False)
+        project_id, backtest_id = await Backtest.run_algorithm(
+            language, wait_to_complete=False
         )
         # Test the invalid requests.
         tool_name = 'update_backtest'
@@ -316,8 +287,8 @@ class TestBacktest:
     @pytest.mark.parametrize('language', ['Py', 'C#'])
     async def test_delete_backtest(self, language):
         # Start a backtest.
-        project_id, backtest_id = (
-            await Backtest.run_template_algorithm(language, False)
+        project_id, backtest_id = await Backtest.run_algorithm(
+            language, wait_to_complete=False
         )
         # Try to delete the backtest.
         await Backtest.delete(project_id, backtest_id)
@@ -328,8 +299,8 @@ class TestBacktest:
     @pytest.mark.parametrize('language', ['Py', 'C#'])
     async def test_delete_backtest_with_invalid_args(self, language):
         # Start a backtest.
-        project_id, backtest_id = (
-            await Backtest.run_template_algorithm(language, False)
+        project_id, backtest_id = await Backtest.run_algorithm(
+            language, wait_to_complete=False
         )
         # Test the invalid requests.
         tool_name = 'delete_backtest'
