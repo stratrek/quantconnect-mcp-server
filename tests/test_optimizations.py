@@ -157,6 +157,16 @@ class Optimization:
             sleep(10)
         assert False, "Optimization job didn't complete in time."
 
+    @staticmethod
+    async def wait_for_job_to_abort(optimization_id):
+        attempts = 0
+        while attempts < 6:
+            attempts += 1
+            optimization = await Optimization.read(optimization_id)
+            if optimization.status.value == 'aborted':
+                return optimization
+            sleep(5)
+        assert False, "Optimization job didn't abort in time."
 
 # Test suite:
 class TestOptimization:
@@ -414,6 +424,7 @@ class TestOptimization:
         await Optimization.wait_for_job_to_start(opt_id)
         # Try to abort the optimization.
         await Optimization.abort(opt_id)
+        await Optimization.wait_for_job_to_abort(opt_id)
         optimization = await Optimization.read(opt_id)
         assert optimization.status.value == 'aborted'
         # Delete the project to clean up.
