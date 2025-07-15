@@ -45,7 +45,7 @@ class TestBacktestInsights:
     )
     async def test_read_backtest_insights(self, language, algo):
         # Backtest and algorithm that emits insights.
-        project_id, backtest_id = await Backtest.run_algorithm(name, algo)
+        project_id, backtest_id = await Backtest.run_algorithm(language, algo)
         # Try to read the insights.
         insights = await BacktestInsights.read(project_id, backtest_id)
         assert len(insights) == 3
