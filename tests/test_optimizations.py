@@ -110,8 +110,7 @@ class Optimization:
     async def update(optimization_id, name):
         return await validate_models(
             mcp, 'update_optimization', 
-            {'optimizationId': optimization_id, 'name': name}, 
-            RestResponse
+            {'optimizationId': optimization_id, 'name': name}, RestResponse
         )
 
     @staticmethod
