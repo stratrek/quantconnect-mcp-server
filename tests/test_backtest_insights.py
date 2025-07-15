@@ -37,19 +37,17 @@ class TestBacktestInsights:
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
-        'language, name, algo', 
+        'language, algo', 
         [
-            ('Py', 'main.py', 'insights.py'),
-            ('C#', 'Main.cs', 'Insights.cs')
+            ('Py', 'insights.py'),
+            ('C#', 'Insights.cs')
         ]
     )
-    async def test_read_backtest_insights(self, language, name, algo):
-        # Create a new project.
-        project_id = (await Project.create(language=language)).projectId
-        # Update the code file to be an algorithm that emits insights.
-        backtest_id = (await Backtest.run_algorithm(project_id, name, algo))
+    async def test_read_backtest_insights(self, language, algo):
+        # Backtest and algorithm that emits insights.
+        project_id, backtest_id = await Backtest.run_algorithm(name, algo)
         # Try to read the insights.
-        insights = (await BacktestInsights.read(project_id, backtest_id))
+        insights = await BacktestInsights.read(project_id, backtest_id)
         assert len(insights) == 3
         source_model = 'ConstantAlphaModel(Price,Up,30.00:00:00,0.1,0.2)'
         for insight in insights:
@@ -68,9 +66,7 @@ class TestBacktestInsights:
     @pytest.mark.parametrize('language', ['Py', 'C#'])
     async def test_read_backtest_insights_with_invalid_args(self, language):
         # Run a backtest with the template algorithm.
-        project_id, backtest_id = (
-            await Backtest.run_template_algorithm(language)
-        )
+        project_id, backtest_id = await Backtest.run_algorithm(language)
         # Test the invalid requests.
         tool_name = 'read_backtest_insights'
         class_ = ReadBacktestInsightsRequest
