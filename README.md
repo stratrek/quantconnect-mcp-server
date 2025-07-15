@@ -1,7 +1,7 @@
 # mcp-server
 Python MCP server for local interactions with the QuantConnect API
 
-## Available Tools (27)
+## Available Tools (34)
 | Tools provided by this Server | Short Description |
 | -------- | ------- |
 | `read_account` | Read the organization account status. |
@@ -31,6 +31,13 @@ Python MCP server for local interactions with the QuantConnect API
 | `read_backtest_insights` | Read out the insights of a backtest. |
 | `update_backtest` | Update the name or note of a backtest. |
 | `delete_backtest` | Delete a backtest from a project. |
+| `estimate_optimization_cost` | Estimate the execution time of an optimization with the specified parameters. |
+| `create_optimization` | Create an optimization with the specified parameters. |
+| `read_optimization` | Read an optimization. |
+| `list_optimizations` | List all the optimizations for a project. |
+| `update_optimization` | Update the name of an optimization. |
+| `abort_optimization` | Abort an optimization. |
+| `delete_optimization` | Delete an optimization. |
 
 
 ## Configuration Examples
