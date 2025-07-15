@@ -37,22 +37,22 @@ class TestBacktestOrders:
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
-        'language, name, algo', 
+        'language, algo', 
         [
-            ('Py', 'main.py', 'order_properties.py'),
-            ('C#', 'Main.cs', 'OrderProperties.cs')
+            ('Py', 'order_properties.py'),
+            ('C#', 'OrderProperties.cs')
         ]
     )
-    async def test_read_backtest_orders(self, language, name, algo):
-        # Start a backtest using the default algorithm template.
-        project_id, backtest_id = (
-            await Backtest.run_template_algorithm(language)
-        )
+    async def test_read_backtest_orders(self, language, algo):
+        # Backtest the template algorithm.
+        project_id, backtest_id = await Backtest.run_algorithm(language)
         # Try to read the orders.
         await BacktestOrders.read(project_id, backtest_id)
+        # Delete the project to clean up.
+        await Project.delete(project_id)
         # Try to read orders from an algorithm that uses order 
         # properties.
-        backtest_id = (await Backtest.run_algorithm(project_id, name, algo))
+        project_id, backtest_id = await Backtest.run_algorithm(language, algo)
         orders = (await BacktestOrders.read(project_id, backtest_id))
         assert len(orders) > 0
         for order in orders:
@@ -65,8 +65,8 @@ class TestBacktestOrders:
     @pytest.mark.parametrize('language', ['Py', 'C#'])
     async def test_read_backtest_orders_with_invalid_args(self, language):
         # Start a backtest using the default algorithm template.
-        project_id, backtest_id = (
-            await Backtest.run_template_algorithm(language, False)
+        project_id, backtest_id = await Backtest.run_algorithm(
+            language, wait_to_complete=False
         )
         # Test the invalid requests.
         tool_name = 'read_backtest_orders'
