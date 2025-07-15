@@ -39,7 +39,7 @@ DEFAULT_SETTINGS = {
     'parameters': [
         {'name': 'sma_slow', 'min': 252, 'max': 252+21, 'step': 21},
         {'name': 'sma_fast', 'min': 10, 'max': 110, 'step': 50},
-    ]
+    ],
     'node_type': 'O2-8',
     'parallel_nodes': 2,
     'name': 'Test Optimization',
@@ -74,7 +74,7 @@ class Optimization:
             target=DEFAULT_SETTINGS['target'], 
             target_to=DEFAULT_SETTINGS['target_to'], 
             strategy=DEFAULT_SETTINGS['strategy'], 
-            parameters==DEFAULT_SETTINGS['parameters'], 
+            parameters=DEFAULT_SETTINGS['parameters'], 
             node_type=DEFAULT_SETTINGS['node_type'], 
             parallel_nodes=DEFAULT_SETTINGS['parallel_nodes'], 
             name=DEFAULT_SETTINGS['name'], 
