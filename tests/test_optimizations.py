@@ -143,7 +143,7 @@ class Optimization:
             optimization = await Optimization.read(optimization_id)
             if optimization.status.value != 'new':
                 return optimization
-            sleep(9)
+            sleep(18)
         assert False, "Optimization job didn't start in time."
 
     @staticmethod
