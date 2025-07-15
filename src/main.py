@@ -7,6 +7,7 @@ from tools.project_nodes import register_project_node_tools
 from tools.compile import register_compile_tools
 from tools.files import register_file_tools
 from tools.backtests import register_backtest_tools
+from tools.optimizations import register_optimization_tools
 
 # Initialize the FastMCP server.
 mcp = FastMCP('quantconnect', version='0.1.0')
@@ -20,9 +21,10 @@ registration_functions = [
     register_compile_tools,
     register_file_tools,
     register_backtest_tools,
+    register_optimization_tools,
 ]
-for registration_function in registration_functions:
-    registration_function(mcp)
+for f in registration_functions:
+    f(mcp)
 
 if __name__ == "__main__":
     # Initialize and run the server.
