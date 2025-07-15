@@ -246,7 +246,7 @@ class TestOptimization:
         # Create and compile the project.
         project_id, compile_id = await Files.setup_project(language, algo)
         # Try to create an optimization job.
-        self._check_response(
+        await self._check_response(
             await Optimization.create(project_id, compile_id)
         )
         # Delete the project to clean up.
@@ -313,7 +313,7 @@ class TestOptimization:
             await Optimization.create(project_id, compile_id)
         ).optimizationId
         # Try to read the optimziation.
-        self._check_response(
+        await self._check_response(
             await Optimization.wait_for_job_to_complete(opt_id)
         )
         # Delete the project to clean up.
@@ -347,7 +347,7 @@ class TestOptimization:
         # optimization results.
         optimizations = await Optimization.list(project_id)
         assert len(optimizations) == 1
-        self._check_response(optimizations[0])
+        await self._check_response(optimizations[0])
         # Delete the project to clean up.
         await Project.delete(project_id)
 
