@@ -1,7 +1,7 @@
 # mcp-server
 Python MCP server for local interactions with the QuantConnect API
 
-## Available Tools (34)
+## Available Tools (35)
 | Tools provided by this Server | Short Description |
 | -------- | ------- |
 | `read_account` | Read the organization account status. |
@@ -38,6 +38,7 @@ Python MCP server for local interactions with the QuantConnect API
 | `update_optimization` | Update the name of an optimization. |
 | `abort_optimization` | Abort an optimization. |
 | `delete_optimization` | Delete an optimization. |
+| `read_lean_versions` | Returns a list of LEAN versions with basic information for each version. |
 
 
 ## Configuration Examples
