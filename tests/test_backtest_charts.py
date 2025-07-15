@@ -43,29 +43,26 @@ class BacktestCharts:
 
 
 TEST_CASES = [
-    ('Py', 'main.py', 'charts.py'),
-    ('C#', 'Main.cs', 'Charts.cs')
+    ('Py', 'charts.py'),
+    ('C#', 'Charts.cs')
 ]
 # Test suite:
 class TestBacktestCharts:
 
-    async def _run_algorithm(self, language, name, algo):
-        # Create a new project.
-        project_id = (await Project.create(language=language)).projectId
-        # Update the code file to be an algorithm that creates a custom
-        # chart and then run the backtest.
-        backtest_id = (await Backtest.run_algorithm(project_id, name, algo))
+    async def _run_algorithm(self, language, algo):
+        # Backtest and algorithm that creates a custom chart.
+        project_id, backtest_id = await Backtest.run_algorithm(project_id, algo)
         # Return the data we need to read the backtest charts.
         start = 1672531200  # Start Unix time of the backtest.
         end = 1680307200  # End Unix time of the backtest.
         return project_id, backtest_id, start, end
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize('language, name, algo', TEST_CASES)
-    async def test_read_backtest_chart(self, language, name, algo):
+    @pytest.mark.parametrize('language, algo', TEST_CASES)
+    async def test_read_backtest_chart(self, language, algo):
         # Run the backtest.
         project_id, backtest_id, start, end = (
-            await self._run_algorithm(language, name, algo)
+            await self._run_algorithm(language, algo)
         )
         # Try to read the charts.
         for name in BacktestCharts.default_charts + ['SMA']:
@@ -77,12 +74,12 @@ class TestBacktestCharts:
         await Project.delete(project_id)
 
     @pytest.mark.asyncio    
-    @pytest.mark.parametrize('language, name, algo', TEST_CASES)
+    @pytest.mark.parametrize('language, algo', TEST_CASES)
     async def test_read_backtest_chart_with_invalid_args(
-            self, language, name, algo):
+            self, language, algo):
         # Run the backtest.
         project_id, backtest_id, start, end = (
-            await self._run_algorithm(language, name, algo)
+            await self._run_algorithm(language, algo)
         )
         # Test the invalid requests.
         tool_name = 'read_backtest_chart'
