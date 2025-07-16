@@ -1,7 +1,7 @@
 # mcp-server
 Python MCP server for local interactions with the QuantConnect API
 
-## Available Tools (35)
+## Available Tools (41)
 | Tools provided by this Server | Short Description |
 | -------- | ------- |
 | `read_account` | Read the organization account status. |
@@ -38,8 +38,13 @@ Python MCP server for local interactions with the QuantConnect API
 | `update_optimization` | Update the name of an optimization. |
 | `abort_optimization` | Abort an optimization. |
 | `delete_optimization` | Delete an optimization. |
+| `upload_object` | Upload files to the Object Store. |
+| `read_object_properties` | Get Object Store properties of a specific organization and key. |
+| `read_object_store_file_job_id` | Create a job to download files from the Object Store and then read the job Id. |
+| `read_object_store_file_download_url` | Get the URL for downloading files from the Object Store. |
+| `list_object_store_files` | List the Object Store files under a specific directory in an organization. |
+| `delete_object` | Delete the Object Store file of a specific organization and key. |
 | `read_lean_versions` | Returns a list of LEAN versions with basic information for each version. |
-
 
 ## Configuration Examples
 To connect local MCP clients (like Claude Desktop) to the QC MCP Server, follow these steps:
