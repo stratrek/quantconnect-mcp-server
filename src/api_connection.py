@@ -5,6 +5,8 @@ from time import time
 import os
 from pydantic_core import to_jsonable_python
 
+BASE_URL = 'https://www.quantconnect.com/api/v2'
+
 # Load credentials from environment variables.
 USER_ID = os.getenv('QUANTCONNECT_USER_ID')
 API_TOKEN = os.getenv('QUANTCONNECT_API_TOKEN')
@@ -36,7 +38,7 @@ async def post(endpoint: str, model: object = None):
     """
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            f'https://www.quantconnect.com/api/v2{endpoint}', 
+            f'{BASE_URL}{endpoint}', 
             headers=get_headers(), 
             json=to_jsonable_python(model, exclude_none=True) if model else {}, 
             timeout=30.0
