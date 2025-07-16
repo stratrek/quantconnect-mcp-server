@@ -26,6 +26,7 @@ from models import (
     RestResponse
 )
 
+# Load the organization Id from the environment variables.
 ORGANIZATION_ID = os.getenv('QUANTCONNECT_ORGANIZATION_ID')
 
 
@@ -88,7 +89,7 @@ class ObjectStore:
     @staticmethod
     async def wait_for_job_to_complete(organization_id, job_id):
         attempts = 0
-        while attempts < 10:
+        while attempts < 18:
             attempts += 1
             output_model = await ObjectStore.read_download_url(
                 organization_id, job_id
@@ -220,6 +221,7 @@ class TestObjectStore:
         # Try to list the files in the Object Store.
         response = await ObjectStore.list(ORGANIZATION_ID)
         assert response.path == '/'
+        assert response.objects
         assert [
             (
                 obj.key == '/' + root_dir and 
@@ -232,6 +234,7 @@ class TestObjectStore:
         # Try to list the contents of the `root_dir`.
         response = await ObjectStore.list(ORGANIZATION_ID, path=root_dir)
         assert response.path == root_dir
+        assert len(response.objects) == 2
         assert [
             (
                 obj.key == f'/{root_dir}/child_file' and 
