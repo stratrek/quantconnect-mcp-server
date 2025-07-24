@@ -82,6 +82,8 @@ docker pull quantconnect/mcp-server
 ```
 5. Restart Claude Desktop.
 
+To view all the MCP clients and the features they support, see the [Feature Support Matrix](https://modelcontextprotocol.io/clients#feature-support-matrix) in the MCP documentation.
+
 ## Debugging
 
 ### Logs
