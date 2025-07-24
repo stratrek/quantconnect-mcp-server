@@ -1,3 +1,5 @@
+import os
+
 from mcp.server.fastmcp import FastMCP
 
 from tools.account import register_account_tools
@@ -10,6 +12,8 @@ from tools.backtests import register_backtest_tools
 from tools.optimizations import register_optimization_tools
 from tools.object_store import register_object_store_tools
 from tools.lean_versions import register_lean_version_tools
+
+transport = os.getenv('MCP_TRANSPORT', 'stdio')
 
 # Initialize the FastMCP server.
 mcp = FastMCP('quantconnect', version='0.1.0')
@@ -32,4 +36,4 @@ for f in registration_functions:
 
 if __name__ == "__main__":
     # Initialize and run the server.
-    mcp.run(transport='stdio')
+    mcp.run(transport=transport)
