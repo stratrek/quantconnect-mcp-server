@@ -49,10 +49,14 @@ Python MCP server for local interactions with the QuantConnect API
 ## Configuration Examples
 To connect local MCP clients (like Claude Desktop) to the QC MCP Server, follow these steps:
 
-1. Install Docker Desktop and Claude Desktop.
-2. Clone this repository to your local machine.
-3. In a terminal, navigate to the project and then run `docker build -t mcp-server .`.
-4. Add the following JSON to your configuration file:
+1. Install and open Docker.
+2. In a terminal, pull the MCP Server from Docker Hub.
+   ```
+   docker pull quantconnect/mcp-server
+   ```
+3. Install and open [Claude Desktop](https://claude.ai/download).
+4. In Claude Desktop, click **File > Settings > Developer > Edit Config**.
+5. Edit the `claude_desktop_config.json` file to include the following `quantconnect` configuration:
 ```json
 {
   "mcpServers": {
@@ -66,7 +70,7 @@ To connect local MCP clients (like Claude Desktop) to the QC MCP Server, follow 
         "-e", "QUANTCONNECT_API_TOKEN",
         "--name",
         "quantconnect-mcp-server",
-        "mcp-server"
+        "quantconnect/mcp-server"
       ],
       "env": {
         "QUANTCONNECT_USER_ID": "<your_user_id>",
@@ -76,7 +80,7 @@ To connect local MCP clients (like Claude Desktop) to the QC MCP Server, follow 
   }
 }
 ```
-5. Open Claude Desktop.
+5. Restart Claude Desktop.
 
 ## Debugging
 
