@@ -46,7 +46,7 @@ Python MCP server for local interactions with the QuantConnect API
 | `delete_object` | Delete the Object Store file of a specific organization and key. |
 | `read_lean_versions` | Returns a list of LEAN versions with basic information for each version. |
 
-## Configuration Examples
+## Getting Started
 To connect local MCP clients (like Claude Desktop) to the QC MCP Server, follow these steps:
 
 1. Install and open Docker.
