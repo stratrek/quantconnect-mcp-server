@@ -133,17 +133,6 @@ def register_live_trading_tools(mcp):
         The snapshot updates about every 10 minutes."""
         return await post('/live/insights/read', model)
 
-    # Update (liquidate)
-    @mcp.tool(
-        annotations={
-            'title': 'Liquidate live algorithm', 'idempotentHint': True
-        }
-    )
-    async def liquidate_live_algorithm(
-            model: LiquidateLiveAlgorithmRequest) -> RestResponse:
-        """Liquidate a live algorithm."""
-        return await post('/live/update/liquidate', model)
-
     # Update (stop)
     @mcp.tool(
         annotations={'title': 'Stop live algorithm', 'idempotentHint': True}
@@ -152,3 +141,14 @@ def register_live_trading_tools(mcp):
             model: StopLiveAlgorithmRequest) -> RestResponse:
         """Stop a live algorithm."""
         return await post('/live/update/stop', model)
+
+    # Update (liquidate)
+    @mcp.tool(
+        annotations={
+            'title': 'Liquidate live algorithm', 'idempotentHint': True
+        }
+    )
+    async def liquidate_live_algorithm(
+            model: LiquidateLiveAlgorithmRequest) -> RestResponse:
+        """Liquidate and stop a live algorithm."""
+        return await post('/live/update/liquidate', model)
