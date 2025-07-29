@@ -1,7 +1,7 @@
 # mcp-server
 Python MCP server for local interactions with the QuantConnect API
 
-## Available Tools (41)
+## Available Tools (54)
 | Tools provided by this Server | Short Description |
 | -------- | ------- |
 | `read_account` | Read the organization account status. |
@@ -38,6 +38,19 @@ Python MCP server for local interactions with the QuantConnect API
 | `update_optimization` | Update the name of an optimization. |
 | `abort_optimization` | Abort an optimization. |
 | `delete_optimization` | Delete an optimization. |
+| `authorize_connection` | Authorize an external connection with a live brokerage or data provider. |
+| `create_live_algorithm` | Create a live algorithm. |
+| `read_live_algorithm` | Read details of a live algorithm. |
+| `list_live_algorithms` | List all your past and current live trading deployments. |
+| `read_live_chart` | Read a chart from a live algorithm. |
+| `read_live_logs` | Get the logs of a live algorithm. |
+| `read_live_portfolio` | Read out the portfolio state of a live algorithm. |
+| `read_live_orders` | Read out the orders of a live algorithm. |
+| `read_live_insights` | Read out the insights of a live algorithm. |
+| `liquidate_live_algorithm` | Liquidate a live algorithm. |
+| `stop_live_algorithm` | Stop a live algorithm. |
+| `create_live_command` | Send a command to a live trading algorithm. |
+| `broadcast_live_command` | Broadcast a live command to all live algorithms in an organization. |
 | `upload_object` | Upload files to the Object Store. |
 | `read_object_properties` | Get Object Store properties of a specific organization and key. |
 | `read_object_store_file_job_id` | Create a job to download files from the Object Store and then read the job Id. |
