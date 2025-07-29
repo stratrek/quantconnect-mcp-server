@@ -8,6 +8,8 @@ from tools.compile import register_compile_tools
 from tools.files import register_file_tools
 from tools.backtests import register_backtest_tools
 from tools.optimizations import register_optimization_tools
+from tools.live import register_live_trading_tools
+from tools.live_commands import register_live_trading_command_tools
 from tools.object_store import register_object_store_tools
 from tools.lean_versions import register_lean_version_tools
 
@@ -24,6 +26,8 @@ registration_functions = [
     register_file_tools,
     register_backtest_tools,
     register_optimization_tools,
+    register_live_trading_tools,
+    register_live_trading_command_tools,
     register_object_store_tools,
     register_lean_version_tools,
 ]
