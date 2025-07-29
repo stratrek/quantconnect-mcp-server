@@ -25,12 +25,13 @@ def get_headers():
         'Timestamp': timestamp
     }
 
-async def post(endpoint: str, model: object = None):
+async def post(endpoint: str, model: object = None, timeout: float = 30.0):
     """Make an HTTP POST request to the API with proper error handling.
     
     Args:
         endpoint: The API endpoint path (ex: '/projects/create')
         model: Optional Pydantics model for the request.
+        timeout: Optional timeout for the request (in seconds).
         
     Returns:
         Response JSON if successful. Otherwise, throws an exception, 
@@ -41,7 +42,7 @@ async def post(endpoint: str, model: object = None):
             f'{BASE_URL}{endpoint}', 
             headers=get_headers(), 
             json=to_jsonable_python(model, exclude_none=True) if model else {}, 
-            timeout=30.0
+            timeout=timeout
         )
         response.raise_for_status()
         return response.json()
