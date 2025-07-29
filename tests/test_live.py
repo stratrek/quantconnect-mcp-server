@@ -28,11 +28,6 @@ DEFAULT_SETTINGS = {
     'versionId': '-1', 
     'brokerage': {
         'id': 'QuantConnectBrokerage' 
-    },
-    'dataProviders': {
-        'QuantConnectBrokerage': {
-            'id': 'QuantConnectBrokerage'
-        }
     }
 }
 
@@ -43,7 +38,7 @@ class Live:
     @staticmethod
     async def authorize_connection(brokerage):
         return await validate_models(
-            mcp, 'authorize_external_connection', {'brokerage': brokerage},
+            mcp, 'authorize_connection', {'brokerage': brokerage},
             AuthorizeExternalConnectionResponse
         )
 
@@ -52,7 +47,7 @@ class Live:
             project_id, compile_id, node_id, 
             version_id=DEFAULT_SETTINGS['versionId'], 
             brokerage=DEFAULT_SETTINGS['brokerage'], 
-            data_providers=DEFAULT_SETTINGS['dataProviders']):
+            **kwargs):
         return await validate_models(
             mcp, 'create_live_algorithm', 
             {
@@ -60,9 +55,8 @@ class Live:
                 'compileId': compile_id, 
                 'nodeId': node_id,
                 'versionId': version_id,
-                'brokerage': brokerage,
-                'dataProviders': data_providers
-            },
+                'brokerage': brokerage
+            } | kwargs,
             CreateLiveAlgorithmResponse
         )
 
@@ -131,6 +125,17 @@ class Live:
             sleep(10)
         assert False, "Holding wasn't removed in time."
 
+    @staticmethod
+    async def wait_for_holdings_to_update(project_id, symbol_id):
+        attempts = 0
+        while attempts < 60: # 10 minutes
+            attempts += 1
+            portfolio = await Live.read_portfolio(project_id)
+            if symbol_id in portfolio.holdings:
+                return portfolio
+            sleep(10)
+        assert False, "Holding wasn't updated in time."
+
 
 # Test suite:
 class TestLive:
@@ -146,7 +151,7 @@ class TestLive:
         response = await Live.create(project_id, compile_id, node_id)
         assert response.source == 'api-v2'
         assert response.projectId == project_id
-        assert response.live.brokerage.value == 'PaperBrokerage'
+        assert response.live.brokerage == 'PaperBrokerage'
         # Stop the algorithm and delete the project to clean up.
         await Live.stop(project_id)
         await Project.delete(project_id)
@@ -194,7 +199,7 @@ class TestLive:
         await Live.create(project_id, compile_id, node_id)
         # Try to read the algorithm
         live = await Live.read(project_id)
-        assert live.brokerage.value == 'PaperBrokerage'
+        assert live.brokerage == 'PaperBrokerage'
         # Stop the algorithm and delete the project to clean up.
         await Live.stop(project_id)
         await Project.delete(project_id)
@@ -233,18 +238,22 @@ class TestLive:
         # Wait for the algorithm to start running.
         await Live.wait_for_algorithm_to_start(project_id)
         # Ensure the algorithm is invested.
-        portfolio = await Live.read_portfolio(project_id)
+        portfolio = await Live.wait_for_holdings_to_update(
+            project_id, holding['symbolId']
+        )
         read_holding = portfolio.holdings[holding['symbolId']]
         assert read_holding.a == holding['averagePrice']
         assert read_holding.q ==  holding['quantity']
-        # Try to liquidate the algorithm.
+        # Try to liquidate (and stop) the algorithm.
         await Live.liquidate(project_id)
         # Ensure the algorithm is no longer invested.
         await Live.wait_for_holding_to_be_removed(
             project_id, holding['symbolId']
         )
-        # Stop the algorithm and delete the project to clean up.
-        await Live.stop(project_id)
+        # Ensure the algorithm is no longer running.
+        live = await Live.read(project_id)
+        assert live.stopped is not None
+        # Delete the project to clean up.
         await Project.delete(project_id)
 
     @pytest.mark.asyncio
