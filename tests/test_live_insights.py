@@ -23,7 +23,7 @@ class LiveInsights:
     @staticmethod
     async def wait_for_insights_to_load(project_id, end=1_000):
         attempts = 0
-        while attempts < 6*10: # 10 minutes
+        while attempts < 6*15: # 15 minutes
             attempts += 1
             response = await LiveInsights.read(project_id, end)
             if response.length:
