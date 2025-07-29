@@ -1,7 +1,8 @@
 import pytest
+from types import UnionType
 import jsonschema
 from json import loads
-from pydantic import ValidationError
+from pydantic import ValidationError, TypeAdapter
 from datetime import datetime
 
 async def validate_response(
@@ -11,8 +12,11 @@ async def validate_response(
         instance=structured_response, 
         schema=mcp._tool_manager.get_tool(tool_name).fn_metadata.output_schema
     )
+
     # Create and return the output model.
-    return output_class.model_validate(structured_response)
+    if isinstance(output_class, UnionType):
+        structured_response = structured_response['result']
+    return TypeAdapter(output_class).validate_python(structured_response)
 
 async def validate_models(
         mcp, tool_name, input_args={}, output_class=None, 
@@ -20,7 +24,7 @@ async def validate_models(
     # Call the tool with the arguments. If the input args are invalid,
     # it raises an error.
     unstructured_response, structured_response = await mcp.call_tool(
-        tool_name, {'model': input_args} if input_args else {}
+        tool_name, {'model': input_args}
     )
     # Check if the response has the success flag.
     assert loads(unstructured_response[0].text)['success'] == success_expected,\
