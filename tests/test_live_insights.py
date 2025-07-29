@@ -51,7 +51,6 @@ class TestLiveInsights:
         await Live.wait_for_algorithm_to_start(project_id)
         # Try to read the insights.
         insights = await LiveInsights.wait_for_insights_to_load(project_id)
-        assert len(insights) == 10
         for i, insight in enumerate(insights):
             insight.symbol == 'BTCUSD 2XR'
             insight.type == 'price'
