@@ -47,8 +47,8 @@ Python MCP server for local interactions with the QuantConnect API
 | `read_live_portfolio` | Read out the portfolio state of a live algorithm. |
 | `read_live_orders` | Read out the orders of a live algorithm. |
 | `read_live_insights` | Read out the insights of a live algorithm. |
-| `liquidate_live_algorithm` | Liquidate a live algorithm. |
 | `stop_live_algorithm` | Stop a live algorithm. |
+| `liquidate_live_algorithm` | Liquidate and stop a live algorithm. |
 | `create_live_command` | Send a command to a live trading algorithm. |
 | `broadcast_live_command` | Broadcast a live command to all live algorithms in an organization. |
 | `upload_object` | Upload files to the Object Store. |
