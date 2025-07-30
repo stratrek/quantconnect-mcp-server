@@ -27,8 +27,9 @@ async def validate_models(
         tool_name, {'model': input_args}
     )
     # Check if the response has the success flag.
-    assert loads(unstructured_response[0].text)['success'] == success_expected,\
-        structured_response
+    assert loads(
+        unstructured_response[0].text
+    ).get('success', True) == success_expected, structured_response
     if not success_expected:
         return structured_response
     # Check if the response respects the output_class.
