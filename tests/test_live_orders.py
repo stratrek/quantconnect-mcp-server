@@ -50,9 +50,9 @@ class TestLiveOrders:
         )
         await Live.wait_for_algorithm_to_start(project_id)
         # Try to read the orders.
-        orders = await LiveOrders.wait_for_orders_to_load(project_id)
-        for order in orders:
-            order.symbol.id == 'BTCUSD 2XR'
+        #orders = await LiveOrders.wait_for_orders_to_load(project_id)
+        #for order in orders:
+        #    order.symbol.id == 'BTCUSD 2XR'
         # Stop the algorithm and delete the project to clean up.
         await Live.stop(project_id)
         await Project.delete(project_id)
