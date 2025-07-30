@@ -37,5 +37,5 @@ for f in registration_functions:
     f(mcp)
 
 if __name__ == "__main__":
-    # Initialize and run the server.
+    # Run the server.
     mcp.run(transport='stdio')
