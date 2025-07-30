@@ -6,6 +6,6 @@ public class BacktestInitTestAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
-        AddEquity("SPY", Resolution.Daily);
+        AddEquity("SPY", Resolution.Day);
     }
 }
