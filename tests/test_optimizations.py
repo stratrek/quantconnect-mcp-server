@@ -149,7 +149,7 @@ class Optimization:
     @staticmethod
     async def wait_for_job_to_complete(optimization_id):
         attempts = 0
-        while attempts < 12:
+        while attempts < 6*5:  # 5 minutes
             attempts += 1
             optimization = await Optimization.read(optimization_id)
             if optimization.status.value == 'completed':
