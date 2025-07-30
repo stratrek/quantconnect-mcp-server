@@ -44,11 +44,10 @@ class ProjectCollaboration:
 
     @staticmethod
     async def read(project_id):
-        output_model = await validate_models(
+        return await validate_models(
             mcp, 'read_project_collaborators', {'projectId': project_id}, 
             ReadCollaboratorsResponse
         )
-        return output_model.collaborators
 
     @staticmethod
     async def update(project_id, collaborator_user_id, live_control, write):
@@ -144,8 +143,12 @@ class TestProjectCollaboration:
             project_id, COLLABORATOR_ID, True, True
         )
         # Read the collaborator information of this project.
-        collaborators = await ProjectCollaboration.read(project_id)
+        response = await ProjectCollaboration.read(project_id)
+        # Test if the project owner control and permissions are correct.
+        assert response.userLiveControl
+        assert response.userPermissions.value == 'write'
         # Test if the collaborator was added.
+        collaborators = response.collaborators
         assert len(collaborators) == 2
         assert any(
            [c.publicId == COLLABORATOR_ID for c in collaborators]
