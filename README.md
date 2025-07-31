@@ -99,9 +99,9 @@ docker pull quantconnect/mcp-server
   }
 }
 ```
-To get your user Id and API token, see [Request API Token](https://www.quantconnect.com/docs/v2/cloud-platform/community/profile#09-Request-API-Token).
+  To get your user Id and API token, see [Request API Token](https://www.quantconnect.com/docs/v2/cloud-platform/community/profile#09-Request-API-Token).
 
-5. Restart Claude Desktop.
+6. Restart Claude Desktop.
 
 To view all the MCP clients and the features they support, see the [Feature Support Matrix](https://modelcontextprotocol.io/clients#feature-support-matrix) in the MCP documentation.
 
