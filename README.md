@@ -1,6 +1,47 @@
 # mcp-server
 Python MCP server for local interactions with the QuantConnect API
 
+## Getting Started
+To connect local MCP clients (like Claude Desktop) to the QC MCP Server, follow these steps:
+
+1. Install and open [Docker Desktop](https://docs.docker.com/desktop/).
+2. In a terminal, pull the MCP Server from Docker Hub.
+```
+docker pull quantconnect/mcp-server
+```
+3. Install and open [Claude Desktop](https://claude.ai/download).
+4. In Claude Desktop, click **File > Settings > Developer > Edit Config**.
+5. Edit the `claude_desktop_config.json` file to include the following `quantconnect` configuration:
+```json
+{
+  "mcpServers": {
+    "quantconnect": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e", "QUANTCONNECT_USER_ID",
+        "-e", "QUANTCONNECT_API_TOKEN",
+        "--name",
+        "quantconnect-mcp-server",
+        "quantconnect/mcp-server"
+      ],
+      "env": {
+        "QUANTCONNECT_USER_ID": "<your_user_id>",
+        "QUANTCONNECT_API_TOKEN": "<your_api_token"
+      }
+    }
+  }
+}
+```
+  To get your user Id and API token, see [Request API Token](https://www.quantconnect.com/docs/v2/cloud-platform/community/profile#09-Request-API-Token).
+
+6. Restart Claude Desktop.
+
+To view all the MCP clients and the features they support, see the [Feature Support Matrix](https://modelcontextprotocol.io/clients#feature-support-matrix) in the MCP documentation.
+
+
 ## Available Tools (60)
 | Tools provided by this Server | Short Description |
 | -------- | ------- |
@@ -64,46 +105,6 @@ Python MCP server for local interactions with the QuantConnect API
 | `update_code_to_pep8` | Update Python code to follow PEP8 style. |
 | `check_syntax` | Check the syntax of a code. |
 | `search_quantconnect` | Search for content in QuantConnect. |
-
-## Getting Started
-To connect local MCP clients (like Claude Desktop) to the QC MCP Server, follow these steps:
-
-1. Install and open [Docker Desktop](https://docs.docker.com/desktop/).
-2. In a terminal, pull the MCP Server from Docker Hub.
-```
-docker pull quantconnect/mcp-server
-```
-3. Install and open [Claude Desktop](https://claude.ai/download).
-4. In Claude Desktop, click **File > Settings > Developer > Edit Config**.
-5. Edit the `claude_desktop_config.json` file to include the following `quantconnect` configuration:
-```json
-{
-  "mcpServers": {
-    "quantconnect": {
-      "command": "docker",
-      "args": [
-        "run",
-        "-i",
-        "--rm",
-        "-e", "QUANTCONNECT_USER_ID",
-        "-e", "QUANTCONNECT_API_TOKEN",
-        "--name",
-        "quantconnect-mcp-server",
-        "quantconnect/mcp-server"
-      ],
-      "env": {
-        "QUANTCONNECT_USER_ID": "<your_user_id>",
-        "QUANTCONNECT_API_TOKEN": "<your_api_token"
-      }
-    }
-  }
-}
-```
-  To get your user Id and API token, see [Request API Token](https://www.quantconnect.com/docs/v2/cloud-platform/community/profile#09-Request-API-Token).
-
-6. Restart Claude Desktop.
-
-To view all the MCP clients and the features they support, see the [Feature Support Matrix](https://modelcontextprotocol.io/clients#feature-support-matrix) in the MCP documentation.
 
  --- 
 ## Tool Details
