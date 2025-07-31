@@ -105,6 +105,1012 @@ docker pull quantconnect/mcp-server
 
 To view all the MCP clients and the features they support, see the [Feature Support Matrix](https://modelcontextprotocol.io/clients#feature-support-matrix) in the MCP documentation.
 
+ --- 
+## Tool Details
+**Tool:** `read_account`
+
+Read the organization account status.
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `create_project`
+
+Create a new project in your default organization.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `name` | `string`  | Project name. |
+| `language` | `string`  | Programming language to use. |
+| `organizationId` | `string` *optional* | The organization to create project under. If you don't provide a value, it defaults to your preferred organization. |
+
+*This tool modifies it's environment.*
+
+*This tool doesn't perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has additional effects.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `read_project`
+
+List the details of a project.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project. If not provided the API will return a details list of all projects. |
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `list_projects`
+
+List the details of all projects.
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `update_project`
+
+Update a project's name or description.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Project Id to which the file belongs. |
+| `name` | `string` *optional* | The new name for the project. |
+| `description` | `string` *optional* | The new description for the project. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has no additional effect.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `delete_project`
+
+Delete a project.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project to delete. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has no additional effect.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `create_project_collaborator`
+
+Add a collaborator to a project.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project to add the collaborator to. |
+| `collaboratorUserId` | `string`  | User Id of the collaborator to add. |
+| `collaborationLiveControl` | `boolean`  | Gives the right to deploy and stop live algorithms. |
+| `collaborationWrite` | `boolean`  | Gives the right to edit the code. |
+
+*This tool modifies it's environment.*
+
+*This tool doesn't perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has no additional effect.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `read_project_collaborators`
+
+List all collaborators on a project.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project from which to read the collaborators. |
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `update_project_collaborator`
+
+Update collaborator information in a project.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project the collaborator is on. |
+| `collaboratorUserId` | `string`  | User Id of the collaborator to update. |
+| `liveControl` | `boolean`  | Gives the right to deploy and stop live algorithms. |
+| `write` | `boolean`  | Gives the right to edit the code. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has no additional effect.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `delete_project_collaborator`
+
+Remove a collaborator from a project.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project to remove the collaborator from. |
+| `collaboratorId` | `string`  | User Id of the collaborator to remove. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has no additional effect.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `read_project_nodes`
+
+Read the available and selected nodes of a project.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project to which the nodes refer. |
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `update_project_nodes`
+
+Update the active state of the given nodes to true.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Project Id to which the nodes refer. |
+| `nodes` | `array` *optional* | List of node Ids the project may use. If you omit this property or pass an empty list, the best node will be automatically selected for backtest, research, and live trading. |
+
+*This tool modifies it's environment.*
+
+*This tool doesn't perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has no additional effect.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `create_compile`
+
+Asynchronously create a compile job request for a project.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project to compile. |
+
+*This tool modifies it's environment.*
+
+*This tool doesn't perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has additional effects.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `read_compile`
+
+Read a compile packet job result.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project you requested to compile. |
+| `compileId` | `string`  | Compile Id returned during the creation request. |
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `create_file`
+
+Add a file to a given project.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project to add the file. |
+| `name` | `string`  | The name of the new file. |
+| `content` | `string` *optional* | The content of the new file. |
+
+*This tool modifies it's environment.*
+
+*This tool doesn't perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has no additional effect.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `read_file`
+
+Read a file from a project, or all files in the project if no file name is provided.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project that contains the file. |
+| `name` | `string` *optional* | The name of the file to read. |
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `update_file_name`
+
+Update the name of a file.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project that contains the file. |
+| `name` | `string`  | The current name of the file. |
+| `newName` | `string`  | The new name for the file. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has no additional effect.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `update_file_contents`
+
+Update the contents of a file.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project that contains the file. |
+| `name` | `string`  | The name of the file to update. |
+| `content` | `string`  | The new contents of the file. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has no additional effect.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `delete_file`
+
+Delete a file in a project.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project that contains the file. |
+| `name` | `string`  | The name of the file to delete. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has no additional effect.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `create_backtest`
+
+Create a new backtest request and get the backtest Id.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project to backtest. |
+| `compileId` | `string`  | Compile Id for the project to backtest. |
+| `backtestName` | `string`  | Name for the new backtest. |
+| `parameters` | `object` *optional* | Parameters to use for the backtest. |
+
+*This tool modifies it's environment.*
+
+*This tool doesn't perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has additional effects.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `read_backtest`
+
+Read the results of a backtest.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project that contains the backtest. |
+| `backtestId` | `string`  | Id of the backtest to read. |
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `list_backtests`
+
+List all the backtests for the project.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project from which to read one or multiple backtests. |
+| `includeStatistics` | `boolean` *optional* | If true, the backtests summaries from the response will contain the statistics with their corresponding values. |
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `read_backtest_chart`
+
+Read a chart from a backtest.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project that contains the backtest. |
+| `backtestId` | `string`  | Id of the backtest for this chart request. |
+| `name` | `string`  | The requested chart name. |
+| `count` | `integer`  | The number of data points to request. |
+| `start` | `integer`  | The start timestamp of the request in Unix time. |
+| `end` | `integer`  | The end timestamp of the request in Unix time. |
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `read_backtest_orders`
+
+Read out the orders of a backtest.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `start` | `integer`  | Starting index of the orders to be fetched. |
+| `end` | `integer`  | Last index of the orders to be fetched. Note that end - start must be less than 100. |
+| `projectId` | `integer`  | Id of the project from which to read the backtest. |
+| `backtestId` | `string`  | Id of the backtest from which to read the orders. |
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `read_backtest_insights`
+
+Read out the insights of a backtest.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `start` | `integer`  | Starting index of the insights to be fetched. |
+| `end` | `integer`  | Last index of the insights to be fetched. Note that end - start must be less than 100. |
+| `projectId` | `integer`  | Id of the project from which to read the backtest. |
+| `backtestId` | `string`  | Id of the backtest from which to read the insights. |
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `update_backtest`
+
+Update the name or note of a backtest.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project that contains the backtest. |
+| `backtestId` | `string`  | Id of the backtest to update. |
+| `name` | `string` *optional* | Name to assign to the backtest. |
+| `note` | `string` *optional* | Note to attach to the backtest. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has no additional effect.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `delete_backtest`
+
+Delete a backtest from a project.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project that contains the backtest. |
+| `backtestId` | `string`  | Id of the backtest to delete. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has no additional effect.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `estimate_optimization_time`
+
+Estimate the execution time of an optimization with the specified parameters.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project to optimize. |
+| `name` | `string`  | Name of the optimization. |
+| `target` | `string`  | Target statistic of the optimization to minimize or maximize. |
+| `targetTo` | `string`  | Target extremum of the optimization. |
+| `targetValue` | `number` *optional* | Desired value for the optimization target statistic. |
+| `strategy` | `string`  | Optimization strategy. |
+| `compileId` | `string` *optional* | Optimization compile Id. |
+| `parameters` | `array`  | Optimization parameters. |
+| `constraints` | `array` *optional* | Optimization constraints. |
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `create_optimization`
+
+Create an optimization with the specified parameters.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project to optimize. |
+| `name` | `string`  | Name of the optimization. |
+| `target` | `string`  | Target statistic of the optimization to minimize or maximize. |
+| `targetTo` | `string`  | Target extremum of the optimization. |
+| `targetValue` | `number` *optional* | Desired value for the optimization target statistic. |
+| `strategy` | `string`  | Optimization strategy. |
+| `compileId` | `string`  | Optimization compile Id. |
+| `parameters` | `array`  | Optimization parameters. |
+| `constraints` | `array` *optional* | Optimization constraints. |
+| `estimatedCost` | `number`  | Estimated cost for optimization. |
+| `nodeType` | `string`  | Optimization node type. |
+| `parallelNodes` | `integer`  | Number of parallel nodes for optimization. |
+
+*This tool modifies it's environment.*
+
+*This tool doesn't perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has additional effects.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `read_optimization`
+
+Read an optimization.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `optimizationId` | `string`  | Id of the optimization to read. |
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `list_optimizations`
+
+List all the optimizations for a project.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the Project to get a list of optimizations for. |
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `update_optimization`
+
+Update the name of an optimization.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `optimizationId` | `string`  | Id of the optimization to update. |
+| `name` | `string`  | Name to assign to the optimization. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has no additional effect.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `abort_optimization`
+
+Abort an optimization.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `optimizationId` | `string`  | Id of the optimization to abort. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has no additional effect.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `delete_optimization`
+
+Delete an optimization.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `optimizationId` | `string`  | Id of the optimization to delete. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has no additional effect.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `authorize_connection`
+
+Authorize an external connection with a live brokerage or data provider.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `brokerage` | `string`  | The brokerage to authenticate a connection with. |
+
+*This tool modifies it's environment.*
+
+*This tool doesn't perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has no additional effect.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `create_live_algorithm`
+
+Create a live algorithm.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `versionId` | `string`  | The version of the Lean used to run the algorithm. -1 is master, however, sometimes this can create problems with live deployments. If you experience problems using, try specifying the version of Lean you would like to use. |
+| `projectId` | `integer`  | Project Id. |
+| `compileId` | `string`  | Compile Id. |
+| `nodeId` | `string`  | Id of the node that will run the algorithm. |
+| `brokerage` | `brokerage enum`  | Brokerage configuration for the live algorithm. |
+| `dataProviders` | `dataProvider(s)` *optional* | Dictionary of data provider configurations to be used in the live algorithm. Provide at least one. The order in which you define the providers defines their order of precedence. |
+
+*This tool modifies it's environment.*
+
+*This tool doesn't perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has additional effects.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `read_live_algorithm`
+
+Read details of a live algorithm.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project to read. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has additional effects.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `list_live_algorithms`
+
+List all your past and current live trading deployments.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `status` | `status enum` *optional* | Status of the live algorithms to include in the response. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has additional effects.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `read_live_chart`
+
+Read a chart from a live algorithm.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project that's live trading. |
+| `name` | `string`  | Name of the chart to read. |
+| `count` | `integer`  | The number of data points to request. |
+| `start` | `integer`  | The unix start time of the request. |
+| `end` | `integer`  | The unix end time of the request. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has additional effects.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `read_live_logs`
+
+Get the logs of a live algorithm.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `format` | `` *optional* | Format of the log results. |
+| `projectId` | `integer`  | Id of the project that contains the live running algorithm. |
+| `algorithmId` | `string`  | Deploy Id (Algorithm Id) of the live running algorithm. |
+| `startLine` | `integer`  | Start line (inclusive) of logs to read. The lines numbers start at 0. |
+| `endLine` | `integer`  | End line (exclusive) of logs to read, where endLine - startLine <= 250. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has additional effects.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `read_live_portfolio`
+
+Read out the portfolio state of a live algorithm.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project from which to read the live algorithm. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has additional effects.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `read_live_orders`
+
+Read out the orders of a live algorithm.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `start` | `integer` *optional* | Starting index of the orders to be fetched. Required if end > 1,000. |
+| `end` | `integer`  | Last index of the orders to be fetched. Note that end - start must be less than 1,000. |
+| `projectId` | `integer`  | Id of the project from which to read the live algorithm. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has additional effects.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `read_live_insights`
+
+Read out the insights of a live algorithm.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `start` | `integer` *optional* | Starting index of the insights to be fetched. Required if end > 100. |
+| `end` | `integer`  | Last index of the insights to be fetched. Note that end - start must be less than 100. |
+| `projectId` | `integer`  | Id of the project from which to read the live algorithm. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has additional effects.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `stop_live_algorithm`
+
+Stop a live algorithm.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project to stop trading live. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has no additional effect.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `liquidate_live_algorithm`
+
+Liquidate and stop a live algorithm.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Project Id for the live instance to liquidate. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has no additional effect.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `create_live_command`
+
+Send a command to a live trading algorithm.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Project for the live instance we want to run the command against. |
+| `command` | `object`  | The command to run. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has additional effects.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `broadcast_live_command`
+
+Broadcast a live command to all live algorithms in an organization.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `organizationId` | `string`  | Organization Id of the projects we would like to broadcast the command to |
+| `excludeProjectId` | `integer` *optional* | Project for the live instance we want to exclude from the broadcast list. If null, all projects will be included. |
+| `command` | `object`  | The command to run. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has additional effects.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `upload_object`
+
+Upload files to the Object Store.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `organizationId` | `string`  | Orgainization ID. |
+| `key` | `string`  | Unique key to access the object in Object Store. |
+| `objectData` | `string`  | Object data to be stored. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has no additional effect.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `read_object_properties`
+
+Get Object Store properties of a specific organization and key.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `organizationId` | `string`  | Id of the organization that owns the Object Store. |
+| `key` | `string`  | Key in the Object Store. |
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `read_object_store_file_job_id`
+
+Create a job to download files from the Object Store and then read the job Id.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `organizationId` | `string`  | Id of the organization that owns the Object Store. |
+| `keys` | `array`  | Keys of the Object Store files. |
+
+*This tool modifies it's environment.*
+
+*This tool doesn't perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has additional effects.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `read_object_store_file_download_url`
+
+Get the URL for downloading files from the Object Store.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `organizationId` | `string`  | Id of the organization that owns the Object Store. |
+| `jobId` | `string`  | Id of the download job for the files. |
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `list_object_store_files`
+
+List the Object Store files under a specific directory in an organization.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `organizationId` | `string`  | Id of the organization to list the Object Store files from. |
+| `path` | `string` *optional* | Path to a directory in the Object Store. |
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `delete_object`
+
+Delete the Object Store file of a specific organization and key.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `organizationId` | `string`  | Id of the organization that owns the Object Store. |
+| `key` | `string`  | Key of the Object Store file to delete. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has no additional effect.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `read_lean_versions`
+
+Returns a list of LEAN versions with basic information for each version.
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `check_initialization_errors`
+
+Run a backtest for a few seconds to initialize the algorithm and get inialization errors if any.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `language` | `string`  | Programming language. |
+| `files` | `array`  | Files to process. |
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `complete_code`
+
+Show the code completion for a specific text input.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `language` | `string`  | Programming language for the code completion. |
+| `sentence` | `string`  | Sentence to complete. |
+| `responseSizeLimit` | `integer` *optional* | Maximum size of the responses. |
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `enhance_error_message`
+
+Show additional context and suggestions for error messages.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `language` | `string`  | Programming language for the code completion. |
+| `error` | `object`  | Error message to enhance. |
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `update_code_to_pep8`
+
+Update Python code to follow PEP8 style.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `files` | `array`  | Files of the project. |
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `check_syntax`
+
+Check the syntax of a code.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `language` | `string`  | Programming language. |
+| `files` | `array`  | Files to process. |
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `search_quantconnect`
+
+Search for content in QuantConnect.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `language` | `string`  | Programming language of the content to search. |
+| `criteria` | `array`  | Criteria for the search. |
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+
+
 ## Debugging
 
 ### Logs
