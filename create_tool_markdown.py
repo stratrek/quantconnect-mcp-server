@@ -1,6 +1,7 @@
 """
 This script generates the markdown for the table of available tools and
 the description of each tool. To run this script, follow these steps:
+
  1) Start the inspector.
 
      `npx @modelcontextprotocol/inspector uv run src/main.py`
