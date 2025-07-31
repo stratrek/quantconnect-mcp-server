@@ -58,7 +58,7 @@ Python MCP server for local interactions with the QuantConnect API
 | `list_object_store_files` | List the Object Store files under a specific directory in an organization. |
 | `delete_object` | Delete the Object Store file of a specific organization and key. |
 | `read_lean_versions` | Returns a list of LEAN versions with basic information for each version. |
-| `check_initialization_errors` | Run a backtest for a few seconds to initialize the algorithm and get inialization errors if any. |
+| `check_initialization_errors` | Run a backtest for a few seconds to initialize the algorithm and get initialization errors if any. |
 | `complete_code` | Show the code completion for a specific text input. |
 | `enhance_error_message` | Show additional context and suggestions for error messages. |
 | `update_code_to_pep8` | Update Python code to follow PEP8 style. |
