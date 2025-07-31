@@ -29,7 +29,7 @@ docker pull quantconnect/mcp-server
       ],
       "env": {
         "QUANTCONNECT_USER_ID": "<your_user_id>",
-        "QUANTCONNECT_API_TOKEN": "<your_api_token"
+        "QUANTCONNECT_API_TOKEN": "<your_api_token>"
       }
     }
   }
