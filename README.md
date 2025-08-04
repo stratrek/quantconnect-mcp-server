@@ -1,3 +1,7 @@
+
+<img width="1575" height="280" alt="github-header" src="https://github.com/user-attachments/assets/6cec1ef7-0340-416e-ab81-c73fbc8ff847" />
+
+
 # mcp-server
 Python MCP server for local interactions with the QuantConnect API
 
