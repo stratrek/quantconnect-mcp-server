@@ -2,8 +2,10 @@
 <img width="1575" height="280" alt="github-header" src="https://github.com/user-attachments/assets/6cec1ef7-0340-416e-ab81-c73fbc8ff847" />
 
 
-# mcp-server
-Python MCP server for local interactions with the QuantConnect API
+# QuantConnect MCP Server
+The QuantConnect MCP Server is a bridge for AIs (such as Claude and OpenAI o3 Pro) to interact with our cloud platform. When equipped with our MCP, the AI can perform tasks on your behalf through our API such as updating projects, writing strategies, backtesting, and deploying strategies to production live-trading.
+
+Our implementation is tested and dockerized for easy cross-platform deployment.
 
 ## Getting Started
 To connect local MCP clients (like Claude Desktop) to the QC MCP Server, follow these steps:
