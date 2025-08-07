@@ -15,7 +15,7 @@ from tools.lean_versions import register_lean_version_tools
 from tools.ai import register_ai_tools
 
 # Initialize the FastMCP server.
-mcp = FastMCP('quantconnect', version='0.1.0')
+mcp = FastMCP('quantconnect')
 
 # Register all the tools.
 registration_functions = [
