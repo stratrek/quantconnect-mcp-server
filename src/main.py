@@ -18,7 +18,7 @@ from tools.ai import register_ai_tools
 transport = os.getenv('MCP_TRANSPORT', 'stdio')
 
 # Initialize the FastMCP server.
-mcp = FastMCP('quantconnect', version='0.1.0', host="0.0.0.0")
+mcp = FastMCP('quantconnect', host="0.0.0.0")
 
 # Register all the tools.
 registration_functions = [
