@@ -216,18 +216,18 @@ class TestFiles:
         # Delete the project to clean up.
         await Project.delete(id_)
 
-    #@pytest.mark.asyncio
-    #async def test_create_file_during_project_collaboration(self):
-    #    # Create a project and add a collaborator.
-    #    project_id = (await Project.create()).projectId
-    #    await ProjectCollaboration.create(
-    #        project_id, COLLABORATOR_ID, True, True
-    #    )
-    #    # Test adding a file to the project.
-    #    await Files.create(project_id, 'test_file_1.py')
-    #    # Remove the collaborator and delete the project to clean up.
-    #    await ProjectCollaboration.delete(project_id, COLLABORATOR_ID)
-    #    await Project.delete(project_id)
+    @pytest.mark.asyncio
+    async def test_create_file_during_project_collaboration(self):
+        # Create a project and add a collaborator.
+        project_id = (await Project.create()).projectId
+        await ProjectCollaboration.create(
+            project_id, COLLABORATOR_ID, True, True
+        )
+        # Test adding a file to the project.
+        await Files.create(project_id, 'test_file_1.py')
+        # Remove the collaborator and delete the project to clean up.
+        await ProjectCollaboration.delete(project_id, COLLABORATOR_ID)
+        await Project.delete(project_id)
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize('language', ['Py', 'C#'])

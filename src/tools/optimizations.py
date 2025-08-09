@@ -17,11 +17,11 @@ def register_optimization_tools(mcp):
     # Estimate cost
     @mcp.tool(
         annotations={
-            'title': 'Estimate optimization cost',
+            'title': 'Estimate optimization time',
             'readOnlyHint': True,
         }
     )
-    async def estimate_optimization_cost(
+    async def estimate_optimization_time(
             model: EstimateOptimizationRequest) -> EstimateOptimizationResponse:
         """Estimate the execution time of an optimization with the 
         specified parameters.

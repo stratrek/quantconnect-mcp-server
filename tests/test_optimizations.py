@@ -54,7 +54,7 @@ class Optimization:
             project_id, target, target_to, strategy, parameters, 
             name='Test Optimization', **kwargs):
         output_model = await validate_models(
-            mcp, 'estimate_optimization_cost',
+            mcp, 'estimate_optimization_time',
             {
                 'projectId': project_id,
                 'name': name,
@@ -149,7 +149,7 @@ class Optimization:
     @staticmethod
     async def wait_for_job_to_complete(optimization_id):
         attempts = 0
-        while attempts < 12:
+        while attempts < 6*5:  # 5 minutes
             attempts += 1
             optimization = await Optimization.read(optimization_id)
             if optimization.status.value == 'completed':
@@ -207,7 +207,7 @@ class TestOptimization:
         # Run a backtest with the template algorithm.
         project_id, _ = await Backtest.run_algorithm(language)
         # Test the invalid requests.
-        tool_name = 'estimate_optimization_cost'
+        tool_name = 'estimate_optimization_time'
         class_ = EstimateOptimizationRequest
         minimal_payload = {
             'projectId': project_id,
