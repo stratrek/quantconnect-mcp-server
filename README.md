@@ -50,8 +50,6 @@ To connect local MCP clients (like Claude Desktop) to the QC MCP Server, follow 
 
 To view all the MCP clients and the features they support, see the [Feature Support Matrix](https://modelcontextprotocol.io/clients#feature-support-matrix) in the MCP documentation.
 
-### Stay Up To Date
-
 To keep the Docker image up-to-date, pull the latest MCP server from Docker Hub in the terminal.
 ```
 docker pull quantconnect/mcp-server
