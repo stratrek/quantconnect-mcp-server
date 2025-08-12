@@ -50,6 +50,11 @@ docker pull quantconnect/mcp-server
 
 To view all the MCP clients and the features they support, see the [Feature Support Matrix](https://modelcontextprotocol.io/clients#feature-support-matrix) in the MCP documentation.
 
+To keep the Docker image up-to-date, pull the latest MCP server from Docker Hub in the terminal.
+```
+docker pull quantconnect/mcp-server
+```
+If you have an ARM chip, add the `--platform linux/arm64` option.
 
 ## Available Tools (60)
 | Tools provided by this Server | Short Description |
