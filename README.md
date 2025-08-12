@@ -11,13 +11,9 @@ Our implementation is tested and dockerized for easy cross-platform deployment.
 To connect local MCP clients (like Claude Desktop) to the QC MCP Server, follow these steps:
 
 1. Install and open [Docker Desktop](https://docs.docker.com/desktop/).
-2. In a terminal, pull the MCP Server from Docker Hub.
-```
-docker pull quantconnect/mcp-server
-```
-3. Install and open [Claude Desktop](https://claude.ai/download).
-4. In Claude Desktop, click **File > Settings > Developer > Edit Config**.
-5. Edit the `claude_desktop_config.json` file to include the following `quantconnect` configuration:
+2. Install and open [Claude Desktop](https://claude.ai/download).
+3. In Claude Desktop, click **File > Settings > Developer > Edit Config**.
+4. Edit the `claude_desktop_config.json` file to include the following `quantconnect` configuration:
 ```json
 {
   "mcpServers": {
@@ -46,9 +42,17 @@ docker pull quantconnect/mcp-server
 
   Our MCP server is multi-platform capable. The options are `linux/amd64` for Intel/AMD chips and `linux/arm64` for ARM chips (for example, Apple's M-series chips).
 
-6. Restart Claude Desktop.
+5. Restart Claude Desktop.
+
+   Claude Desktop automatically pulls our MCP server from Docker Hub and connects to it.
 
 To view all the MCP clients and the features they support, see the [Feature Support Matrix](https://modelcontextprotocol.io/clients#feature-support-matrix) in the MCP documentation.
+
+### Transports
+
+The default transport is `stdio`. To use a different transport, set the optional `MCP_SERVER` environment variable to the transport name.
+
+### Stay Up To Date
 
 To keep the Docker image up-to-date, pull the latest MCP server from Docker Hub in the terminal.
 ```
