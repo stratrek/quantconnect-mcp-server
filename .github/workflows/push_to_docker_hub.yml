@@ -1,8 +1,11 @@
 name: Build and Push to Docker Hub
 
 on:
+  # Run when we click the Run Job button on GitHub.
   workflow_dispatch:
+  # Run when there is a new Release (has a tag).
   push:
+    tags: ['**']    # Match any tag
 
 jobs:
   release:
