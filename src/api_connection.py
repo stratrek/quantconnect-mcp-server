@@ -1,4 +1,4 @@
-from . import __version__
+from src import __version__
 
 import httpx
 from base64 import b64encode
