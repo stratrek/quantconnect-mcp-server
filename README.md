@@ -29,6 +29,7 @@ docker pull quantconnect/mcp-server
         "--rm",
         "-e", "QUANTCONNECT_USER_ID",
         "-e", "QUANTCONNECT_API_TOKEN",
+        "--platform", "<your_platform>",
         "--name",
         "quantconnect-mcp-server",
         "quantconnect/mcp-server"
@@ -42,6 +43,8 @@ docker pull quantconnect/mcp-server
 }
 ```
   To get your user Id and API token, see [Request API Token](https://www.quantconnect.com/docs/v2/cloud-platform/community/profile#09-Request-API-Token).
+
+  Our MCP server is multi-platform capable. The options are `linux/amd64` for Intel/AMD chips and `linux/arm64` for ARM chips (for example, Apple's M-series chips).
 
 6. Restart Claude Desktop.
 
