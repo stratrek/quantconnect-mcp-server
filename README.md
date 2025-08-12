@@ -14,6 +14,7 @@ To connect local MCP clients (like Claude Desktop) to the QC MCP Server, follow 
 2. Install and open [Claude Desktop](https://claude.ai/download).
 3. In Claude Desktop, click **File > Settings > Developer > Edit Config**.
 4. Edit the `claude_desktop_config.json` file to include the following `quantconnect` configuration:
+
 ```json
 {
   "mcpServers": {
@@ -38,6 +39,7 @@ To connect local MCP clients (like Claude Desktop) to the QC MCP Server, follow 
   }
 }
 ```
+
   To get your user Id and API token, see [Request API Token](https://www.quantconnect.com/docs/v2/cloud-platform/community/profile#09-Request-API-Token).
 
   Our MCP server is multi-platform capable. The options are `linux/amd64` for Intel/AMD chips and `linux/arm64` for ARM chips (for example, Apple's M-series chips).
