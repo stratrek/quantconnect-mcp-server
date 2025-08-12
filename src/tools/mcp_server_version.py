@@ -1,4 +1,4 @@
-from . import __version__
+from src import __version__
 
 def register_mcp_server_version_tools(mcp):
     # Read
