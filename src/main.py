@@ -38,7 +38,7 @@ registration_functions = [
     register_object_store_tools,
     register_lean_version_tools,
     register_ai_tools,
-    register_mcp_version_tools,
+    register_mcp_server_version_tools,
 ]
 for f in registration_functions:
     f(mcp)
