@@ -49,5 +49,3 @@ async def post(endpoint: str, model: object = None, timeout: float = 30.0):
         )
         response.raise_for_status()
         return response.json()
-
-a = 1 # Test
