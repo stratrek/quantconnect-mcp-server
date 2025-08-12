@@ -1128,6 +1128,9 @@ Search for content in QuantConnect.
 
 ## Debugging
 
+### Build
+ To build the Docker image from source, clone this repository and then run `docker build -t quantconnect/mcp-server .`.
+
 ### Logs
  To log to the `mcp-server-quantconnect.log` file, `import sys` and then `print("Hello world", file=sys.stderr)`.
 
