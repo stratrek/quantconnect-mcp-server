@@ -11,11 +11,11 @@ from models import (
     ProjectFilesResponse
 )
 
-# Load the code source Id from the environment variables.
-CODE_SOURCE_ID = os.getenv('CODE_SOURCE_ID', 'MCP Server')
+# Load the agent name from the environment variables.
+AGENT_NAME = os.getenv('AGENT_NAME', 'MCP Server')
 
 def add_code_source_id(model):
-    model.codeSourceId = CODE_SOURCE_ID
+    model.codeSourceId = AGENT_NAME
     return model
 
 def register_file_tools(mcp):
