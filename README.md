@@ -354,6 +354,7 @@ Add a file to a given project.
 | `projectId` | `integer`  | Id of the project to add the file. |
 | `name` | `string`  | The name of the new file. |
 | `content` | `string` *optional* | The content of the new file. |
+| `codeSourceId` | `string` *optional* | Name of the environment that's creating the request. |
 
 *This tool modifies it's environment.*
 
@@ -372,6 +373,7 @@ Read a file from a project, or all files in the project if no file name is provi
 | -------- | ------- | ------- |
 | `projectId` | `integer`  | Id of the project that contains the file. |
 | `name` | `string` *optional* | The name of the file to read. |
+| `codeSourceId` | `string` *optional* | Name of the environment that's creating the request. |
 
 *This tool doesn't modify it's environment.*
 
@@ -387,6 +389,7 @@ Update the name of a file.
 | `projectId` | `integer`  | Id of the project that contains the file. |
 | `name` | `string`  | The current name of the file. |
 | `newName` | `string`  | The new name for the file. |
+| `codeSourceId` | `string` *optional* | Name of the environment that's creating the request. |
 
 *This tool modifies it's environment.*
 
@@ -406,6 +409,7 @@ Update the contents of a file.
 | `projectId` | `integer`  | Id of the project that contains the file. |
 | `name` | `string`  | The name of the file to update. |
 | `content` | `string`  | The new contents of the file. |
+| `codeSourceId` | `string` *optional* | Name of the environment that's creating the request. |
 
 *This tool modifies it's environment.*
 
@@ -424,6 +428,7 @@ Delete a file in a project.
 | -------- | ------- | ------- |
 | `projectId` | `integer`  | Id of the project that contains the file. |
 | `name` | `string`  | The name of the file to delete. |
+| `codeSourceId` | `string` *optional* | Name of the environment that's creating the request. |
 
 *This tool modifies it's environment.*
 
