@@ -1,13 +1,16 @@
 from api_connection import post
+from code_source_id import add_code_source_id
 from models import (
     CreateCollaboratorRequest, 
     ReadCollaboratorsRequest,
     UpdateCollaboratorRequest,
     DeleteCollaboratorRequest,
+    LockCollaboratorRequest,
     CreateCollaboratorResponse,
     ReadCollaboratorsResponse,
     UpdateCollaboratorResponse,
-    DeleteCollaboratorResponse
+    DeleteCollaboratorResponse,
+    RestResponse
 )
 
 def register_project_collaboration_tools(mcp):
@@ -59,3 +62,18 @@ def register_project_collaboration_tools(mcp):
             model: DeleteCollaboratorRequest) -> DeleteCollaboratorResponse:
         """Remove a collaborator from a project."""
         return await post('/projects/collaboration/delete', model)
+
+    # Lock
+    @mcp.tool(
+        annotations={
+            'title': 'Lock project with collaborators',
+            'idempotentHint': True
+        }
+    )
+    async def lock_project_with_collaborators(
+            model: LockCollaboratorRequest) -> RestResponse:
+        """Lock a project that has collaborators so you can edit it."""
+        return await post(
+            '/projects/collaboration/lock/acquire', add_code_source_id(model)
+        )
+

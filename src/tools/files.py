@@ -1,6 +1,5 @@
-import os
-
 from api_connection import post
+from code_source_id import add_code_source_id
 from models import (
     CreateProjectFileRequest,
     ReadFilesRequest,
@@ -11,12 +10,6 @@ from models import (
     ProjectFilesResponse
 )
 
-# Load the agent name from the environment variables.
-AGENT_NAME = os.getenv('AGENT_NAME', 'MCP Server')
-
-def add_code_source_id(model):
-    model.codeSourceId = AGENT_NAME
-    return model
 
 def register_file_tools(mcp):
     # Create
