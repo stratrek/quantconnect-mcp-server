@@ -223,6 +223,10 @@ class TestFiles:
         await ProjectCollaboration.create(
             project_id, COLLABORATOR_ID, True, True
         )
+        # Before editing the project, lock it and read files to avoid
+        # errors. 
+        await ProjectCollaboration.lock(project_id)
+        await Files.read(project_id)
         # Test adding a file to the project.
         await Files.create(project_id, 'test_file_1.py')
         # Remove the collaborator and delete the project to clean up.
