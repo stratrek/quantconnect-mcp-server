@@ -22,7 +22,7 @@ jobs:
           - lean_versions
           - mcp_server_version
           - object_store
-          - optimization
+          - optimizations
           - project
           - project_collaboration
           - project_nodes
