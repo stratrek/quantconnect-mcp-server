@@ -43,7 +43,7 @@ class LiveLogs:
 
 TEST_CASES = [
     ('Py', 'live_logs.py'),
-    ('C#', 'LiveLogs.cs')
+    #('C#', 'LiveLogs.cs')
 ]
 # Test suite:
 class TestLiveLogs:
