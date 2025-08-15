@@ -17,7 +17,7 @@ class LiveOrders:
         return await validate_models(
             mcp, 'read_live_orders', 
             {'projectId': project_id, 'start': start, 'end': end},
-            LiveOrdersResponse | LoadingResponse
+            LiveOrdersResponse
         )
 
     @staticmethod
@@ -26,7 +26,7 @@ class LiveOrders:
         while attempts < 6*15:  # 15 minutes
             attempts += 1
             response = await LiveOrders.read(project_id, start, end)
-            if isinstance(response, LiveOrdersResponse) and response.orders:
+            if response.errors is None:
                 return response.orders
             sleep(10)
         assert False, "Orders didn't load in time."
@@ -34,7 +34,7 @@ class LiveOrders:
 
 TEST_CASES = [
     ('Py', 'live_orders.py'),
-    #('C#', 'LiveOrders.cs')
+    ('C#', 'LiveOrders.cs')
 ]
 # Test suite:
 class TestLiveOrders:
@@ -49,10 +49,15 @@ class TestLiveOrders:
             project_id, compile_id, await Live.get_node_id(project_id)
         )
         await Live.wait_for_algorithm_to_start(project_id)
+        # Give the algorithm time to send the orders and then stop it so
+        # it flushes all the orders to the orders file. Without stopping
+        # it, we'll have to wait ~10 minutes for the orders file to 
+        # populate.
+        sleep(120)
+        await Live.stop(project_id)
         # Try to read the orders.
         orders = await LiveOrders.wait_for_orders_to_load(project_id)
         for order in orders:
             order.symbol.id == 'BTCUSD 2XR'
-        # Stop the algorithm and delete the project to clean up.
-        await Live.stop(project_id)
+        # Delete the project to clean up.
         await Project.delete(project_id)

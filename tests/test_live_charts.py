@@ -69,6 +69,11 @@ class TestLiveCharts:
             project_id, compile_id, await Live.get_node_id(project_id)
         )
         await Live.wait_for_algorithm_to_start(project_id)
+        # Give the algorithm time to plot the data and then stop it so
+        # it flushes all the charts to the file. Without stopping it, 
+        # we'll have to wait ~10 minutes for the chart file to populate.
+        sleep(120)
+        await Live.stop(project_id)        
         # Try to read the charts.
         start = int(time())
         for name in LiveCharts.default_charts + ['SMA']:
@@ -76,8 +81,7 @@ class TestLiveCharts:
                 project_id, name, start
             )
             assert chart.name == name, chart
-        # Stop the algorithm and delete the project to clean up.
-        await Live.stop(project_id)
+        # Delete the project to clean up.
         await Project.delete(project_id)
 
     @pytest.mark.asyncio

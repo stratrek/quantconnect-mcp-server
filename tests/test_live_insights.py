@@ -34,7 +34,7 @@ class LiveInsights:
 
 TEST_CASES = [
     ('Py', 'live_insights.py'),
-    #('C#', 'LiveOrders.cs')
+    ('C#', 'LiveOrders.cs')
 ]
 # Test suite:
 class TestLiveInsights:
@@ -49,6 +49,12 @@ class TestLiveInsights:
             project_id, compile_id, await Live.get_node_id(project_id)
         )
         await Live.wait_for_algorithm_to_start(project_id)
+        # Give the algorithm time to emit the insights and then stop it 
+        # so it flushes all the insights to the insight file. Without 
+        # stopping it, we'll have to wait ~10 minutes for the file to 
+        # populate.
+        sleep(120)
+        await Live.stop(project_id)
         # Try to read the insights.
         insights = await LiveInsights.wait_for_insights_to_load(project_id)
         for i, insight in enumerate(insights):
@@ -60,6 +66,5 @@ class TestLiveInsights:
             insight.confidence == None
             insight.weight == None
             insight.tag == None
-        # Stop the algorithm and delete the project to clean up.
-        await Live.stop(project_id)
+        # Delete the project to clean up.
         await Project.delete(project_id)
