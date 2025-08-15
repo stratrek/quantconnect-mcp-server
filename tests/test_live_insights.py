@@ -34,7 +34,7 @@ class LiveInsights:
 
 TEST_CASES = [
     ('Py', 'live_insights.py'),
-    ('C#', 'LiveOrders.cs')
+    ('C#', 'LiveInsights.cs')
 ]
 # Test suite:
 class TestLiveInsights:
