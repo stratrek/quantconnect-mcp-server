@@ -42,7 +42,7 @@ class LiveCharts:
     @staticmethod
     async def wait_for_chart_to_load(project_id, name, start, count=None):
         attempts = 0
-        while attempts < 12: # 1 min
+        while attempts < 3*12: # 3 min
             attempts += 1
             end = max(start+10, int(time()))
             response = await LiveCharts.read(project_id, name, start, end)
@@ -73,7 +73,7 @@ class TestLiveCharts:
         # Give the algorithm time to plot the data and then stop it so
         # it flushes all the charts to the file. Without stopping it, 
         # we'll have to wait ~10 minutes for the chart file to populate.
-        sleep(120)
+        sleep(180)
         await Live.stop(project_id)        
         # Try to read the charts.
         for name in LiveCharts.default_charts + ['SMA']:
