@@ -36,17 +36,17 @@ class LiveCharts:
                 'end': end,
                 'count': count
             },
-            ReadChartResponse | LoadingResponse
+            ReadChartResponse
         )
 
     @staticmethod
     async def wait_for_chart_to_load(project_id, name, start, count=None):
         attempts = 0
-        while attempts < 3*12: # 3 min
+        while attempts < 12*2: # 2 mins
             attempts += 1
             end = max(start+10, int(time()))
             response = await LiveCharts.read(project_id, name, start, end)
-            if isinstance(response, ReadChartResponse):
+            if response.errors is None:
                 return response.chart
             sleep(5)
         assert False, f"Chart didn't load in time. {type(response)}"
@@ -54,7 +54,7 @@ class LiveCharts:
 
 TEST_CASES = [
     ('Py', 'live_charts.py'),
-    #('C#', 'LiveCharts.cs')
+    ('C#', 'LiveCharts.cs')
 ]
 # Test suite:
 class TestLiveCharts:
@@ -125,5 +125,3 @@ class TestLiveCharts:
         # Stop the algorithm and delete the project to clean up.
         await Live.stop(project_id)
         await Project.delete(project_id)
-
-        
