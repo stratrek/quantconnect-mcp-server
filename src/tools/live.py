@@ -117,12 +117,15 @@ def register_live_trading_tools(mcp):
     # Read the orders.
     @mcp.tool(annotations={'title': 'Read live orders', 'readOnly': True})
     async def read_live_orders(
-            model: ReadLiveOrdersRequest
-            ) -> LiveOrdersResponse | LoadingResponse:
+            model: ReadLiveOrdersRequest) -> LiveOrdersResponse:
         """Read out the orders of a live algorithm.
 
         The snapshot updates about every 10 minutes."""
-        return await post('/live/orders/read', model)
+        response = await post('/live/orders/read', model)
+        if 'progress' in response:
+            progress = response["progress"]
+            return {'errors': [f'Chart is loading. Progress: {progress}']}
+        return response
 
     # Read the insights.
     @mcp.tool(annotations={'title': 'Read live insights', 'readOnly': True})
