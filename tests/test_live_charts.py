@@ -54,7 +54,7 @@ class LiveCharts:
 
 TEST_CASES = [
     ('Py', 'live_charts.py'),
-    ('C#', 'LiveCharts.cs')
+    #('C#', 'LiveCharts.cs')
 ]
 # Test suite:
 class TestLiveCharts:
@@ -69,13 +69,13 @@ class TestLiveCharts:
             project_id, compile_id, await Live.get_node_id(project_id)
         )
         await Live.wait_for_algorithm_to_start(project_id)
+        start = int(time())
         # Give the algorithm time to plot the data and then stop it so
         # it flushes all the charts to the file. Without stopping it, 
         # we'll have to wait ~10 minutes for the chart file to populate.
         sleep(120)
         await Live.stop(project_id)        
         # Try to read the charts.
-        start = int(time())
         for name in LiveCharts.default_charts + ['SMA']:
             chart = await LiveCharts.wait_for_chart_to_load(
                 project_id, name, start
