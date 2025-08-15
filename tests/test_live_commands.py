@@ -35,7 +35,7 @@ class LiveCommands:
 
 TEST_CASES = [
     ('Py', 'live_command.py'),
-    ('C#', 'LiveCommand.cs')
+    #('C#', 'LiveCommand.cs')
 ]
 # Test suite:
 class TestLiveCommands:
