@@ -42,7 +42,7 @@ class LiveCharts:
     @staticmethod
     async def wait_for_chart_to_load(project_id, name, start, count=None):
         attempts = 0
-        while attempts < 12*10: # 10 mins
+        while attempts < 12: # 1 min
             attempts += 1
             end = max(start+10, int(time()))
             response = await LiveCharts.read(project_id, name, start, end)
