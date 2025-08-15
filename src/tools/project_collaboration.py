@@ -72,7 +72,10 @@ def register_project_collaboration_tools(mcp):
     )
     async def lock_project_with_collaborators(
             model: LockCollaboratorRequest) -> RestResponse:
-        """Lock a project that has collaborators so you can edit it."""
+        """Lock a project so you can edit it. 
+
+        This is necessary when the project has collaborators or when an 
+        LLM is editing files on your behalf via our MCP Server."""
         return await post(
             '/projects/collaboration/lock/acquire', add_code_source_id(model)
         )
