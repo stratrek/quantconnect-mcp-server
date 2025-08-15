@@ -19,13 +19,18 @@ from models import (
     LiveAlgorithmResults,
     LiveAlgorithmListResponse,
     LivePortfolioResponse,
-    LoadingResponse,
     ReadChartResponse,
     LiveOrdersResponse,
     LiveInsightsResponse,
     ReadLiveLogsResponse,
     RestResponse
 )
+
+async def handle_loading_response(response, text):
+    if 'progress' in response:
+        progress = response["progress"]
+        return {'errors': [f'{text} Progress: {progress}']}
+    return response
 
 def register_live_trading_tools(mcp):
     # Authenticate
@@ -91,10 +96,11 @@ def register_live_trading_tools(mcp):
     # Read a chart.
     @mcp.tool(annotations={'title': 'Read live chart', 'readOnly': True})
     async def read_live_chart(
-            model: ReadLiveChartRequest
-            ) -> ReadChartResponse | LoadingResponse:
+            model: ReadLiveChartRequest) -> ReadChartResponse:
         """Read a chart from a live algorithm."""
-        return await post('/live/chart/read', model)
+        return await handle_loading_response(
+            await post('/live/chart/read', model), 'Chart is loading.'
+        )
 
     # Read the logs.
     @mcp.tool(annotations={'title': 'Read live logs', 'readOnly': True})
@@ -121,11 +127,9 @@ def register_live_trading_tools(mcp):
         """Read out the orders of a live algorithm.
 
         The snapshot updates about every 10 minutes."""
-        response = await post('/live/orders/read', model)
-        if 'progress' in response:
-            progress = response["progress"]
-            return {'errors': [f'Chart is loading. Progress: {progress}']}
-        return response
+        return await handle_loading_response(
+            await post('/live/orders/read', model), 'Orders are loading.'
+        )
 
     # Read the insights.
     @mcp.tool(annotations={'title': 'Read live insights', 'readOnly': True})
