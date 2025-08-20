@@ -60,7 +60,7 @@ docker pull quantconnect/mcp-server
 ```
 If you have an ARM chip, add the `--platform linux/arm64` option.
 
-## Available Tools (60)
+## Available Tools (64)
 | Tools provided by this Server | Short Description |
 | -------- | ------- |
 | `read_account` | Read the organization account status. |
@@ -73,6 +73,7 @@ If you have an ARM chip, add the `--platform linux/arm64` option.
 | `read_project_collaborators` | List all collaborators on a project. |
 | `update_project_collaborator` | Update collaborator information in a project. |
 | `delete_project_collaborator` | Remove a collaborator from a project. |
+| `lock_project_with_collaborators` | Lock a project so you can edit it. |
 | `read_project_nodes` | Read the available and selected nodes of a project. |
 | `update_project_nodes` | Update the active state of the given nodes to true. |
 | `create_compile` | Asynchronously create a compile job request for a project. |
@@ -81,6 +82,7 @@ If you have an ARM chip, add the `--platform linux/arm64` option.
 | `read_file` | Read a file from a project, or all files in the project if no file name is provided. |
 | `update_file_name` | Update the name of a file. |
 | `update_file_contents` | Update the contents of a file. |
+| `patch_file` | Apply a patch (unified diff) to a file in a project. |
 | `delete_file` | Delete a file in a project. |
 | `create_backtest` | Create a new backtest request and get the backtest Id. |
 | `read_backtest` | Read the results of a backtest. |
@@ -117,13 +119,14 @@ If you have an ARM chip, add the `--platform linux/arm64` option.
 | `list_object_store_files` | List the Object Store files under a specific directory in an organization. |
 | `delete_object` | Delete the Object Store file of a specific organization and key. |
 | `read_lean_versions` | Returns a list of LEAN versions with basic information for each version. |
-| `check_initialization_errors` | Run a backtest for a few seconds to initialize the algorithm and get initialization errors if any. |
+| `check_initialization_errors` | Run a backtest for a few seconds to initialize the algorithm and get inialization errors if any. |
 | `complete_code` | Show the code completion for a specific text input. |
 | `enhance_error_message` | Show additional context and suggestions for error messages. |
 | `update_code_to_pep8` | Update Python code to follow PEP8 style. |
 | `check_syntax` | Check the syntax of a code. |
 | `search_quantconnect` | Search for content in QuantConnect. |
-
+| `read_mcp_server_version` | Returns the version of the QC MCP Server that's running. |
+| `read_latest_mcp_server_version` | Returns the latest version of the QC MCP Server released. |
  --- 
 ## Tool Details
 **Tool:** `read_account`
@@ -283,6 +286,24 @@ Remove a collaborator from a project.
 *This tool may interact with an "open world" of external entities.*
 
 ---
+**Tool:** `lock_project_with_collaborators`
+
+Lock a project so you can edit it.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project to edit. |
+| `codeSourceId` | `string`  | Name of the environment that's creating the request. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has no additional effect.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
 **Tool:** `read_project_nodes`
 
 Read the available and selected nodes of a project.
@@ -409,6 +430,25 @@ Update the contents of a file.
 | `projectId` | `integer`  | Id of the project that contains the file. |
 | `name` | `string`  | The name of the file to update. |
 | `content` | `string`  | The new contents of the file. |
+| `codeSourceId` | `string` *optional* | Name of the environment that's creating the request. |
+
+*This tool modifies it's environment.*
+
+*This tool may perform destructive updates.*
+
+*Calling this tool repeatedly with the same arguments has no additional effect.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `patch_file`
+
+Apply a patch (unified diff) to a file in a project.
+
+| Parameter | Type | Description |
+| -------- | ------- | ------- |
+| `projectId` | `integer`  | Id of the project that contains the file. |
+| `patch` | `string`  | A patch string in **unified diff format** (as produced by `git diff`). It specifies changes to apply to one or more files in the project. |
 | `codeSourceId` | `string` *optional* | Name of the environment that's creating the request. |
 
 *This tool modifies it's environment.*
@@ -729,8 +769,8 @@ Create a live algorithm.
 | `projectId` | `integer`  | Project Id. |
 | `compileId` | `string`  | Compile Id. |
 | `nodeId` | `string`  | Id of the node that will run the algorithm. |
-| `brokerage` | `brokerage enum`  | Brokerage configuration for the live algorithm. |
-| `dataProviders` | `dataProvider(s)` *optional* | Dictionary of data provider configurations to be used in the live algorithm. Provide at least one. The order in which you define the providers defines their order of precedence. |
+| `brokerage` | `object`  | Brokerage configuration for the live algorithm. |
+| `dataProviders` | `object` *optional* | Dictionary of data provider configurations to be used in the live algorithm. Provide at least one. The order in which you define the providers defines their order of precedence. |
 
 *This tool modifies it's environment.*
 
@@ -840,8 +880,8 @@ Read out the orders of a live algorithm.
 
 | Parameter | Type | Description |
 | -------- | ------- | ------- |
-| `start` | `integer` *optional* | Starting index of the orders to be fetched. Required if end > 1,000. |
-| `end` | `integer`  | Last index of the orders to be fetched. Note that end - start must be less than 1,000. |
+| `start` | `integer`  | Starting index of the orders to be fetched. |
+| `end` | `integer`  | Last index of the orders to be fetched. Note that end - start must be <= 1,000. |
 | `projectId` | `integer`  | Id of the project from which to read the live algorithm. |
 
 *This tool modifies it's environment.*
@@ -1127,6 +1167,24 @@ Search for content in QuantConnect.
 | -------- | ------- | ------- |
 | `language` | `string`  | Programming language of the content to search. |
 | `criteria` | `array`  | Criteria for the search. |
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `read_mcp_server_version`
+
+Returns the version of the QC MCP Server that's running.
+
+*This tool doesn't modify it's environment.*
+
+*This tool may interact with an "open world" of external entities.*
+
+---
+**Tool:** `read_latest_mcp_server_version`
+
+Returns the latest version of the QC MCP Server released.
 
 *This tool doesn't modify it's environment.*
 
