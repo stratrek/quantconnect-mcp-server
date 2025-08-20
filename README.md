@@ -65,7 +65,7 @@ If you have an ARM chip, add the `--platform linux/arm64` option.
 | -------- | ------- |
 | `read_account` | Read the organization account status. |
 | `create_project` | Create a new project in your default organization. |
-| `read_project` | List the details of a project. |
+| `read_project` | List the details of a project or a set of recent projects. |
 | `list_projects` | List the details of all projects. |
 | `update_project` | Update a project's name or description. |
 | `delete_project` | Delete a project. |
@@ -159,11 +159,13 @@ Create a new project in your default organization.
 ---
 **Tool:** `read_project`
 
-List the details of a project.
+List the details of a project or a set of recent projects.
 
 | Parameter | Type | Description |
 | -------- | ------- | ------- |
-| `projectId` | `integer`  | Id of the project. If not provided the API will return a details list of all projects. |
+| `projectId` | `integer` *optional* | Id of the project to read. |
+| `start` | `integer` *optional* | Starting (inclusive, zero-based) index of the projects to fetch. If you provide this property, omit the project Id property. |
+| `end` | `integer` *optional* | Last (exlusive) index of the projects to fetch. If you provide this property, omit the project Id property. |
 
 *This tool doesn't modify it's environment.*
 
@@ -1192,7 +1194,6 @@ Returns the latest version of the QC MCP Server released.
 
 ---
 
-
 ## Debugging
 
 ### Build
@@ -1204,3 +1205,4 @@ Returns the latest version of the QC MCP Server released.
 ### Inspector
  To start the inspector, run `npx @modelcontextprotocol/inspector uv run src/main.py`.
  To pass a model to the inspector tool, use JSON (for example, `{"name":"My Project","language":"Py"}`).
+ 
