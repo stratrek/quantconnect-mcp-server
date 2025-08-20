@@ -22,7 +22,7 @@ def register_file_tools(mcp):
         }
     )
     async def create_file(
-            model: CreateProjectFileRequest) -> ProjectFilesResponse:
+            model: CreateProjectFileRequest) -> RestResponse:
         """Add a file to a given project."""
         return await post('/files/create', add_code_source_id(model))
 
