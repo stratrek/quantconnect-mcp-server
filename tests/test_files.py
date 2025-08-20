@@ -16,6 +16,7 @@ from models import (
     ReadFilesRequest,
     UpdateFileNameRequest,
     UpdateFileContentsRequest,
+    PatchFileRequest,
     DeleteFileRequest,
     RestResponse,
     ProjectFilesResponse
@@ -54,6 +55,13 @@ class Files:
         return output_model
 
     @staticmethod
+    async def patch(project_id, patch):
+        return await validate_models(
+            mcp, 'patch_file', {'projectId': project_id, 'patch': patch}, 
+            RestResponse
+        )
+
+    @staticmethod
     async def delete(project_id, name):
         return await validate_models(
             mcp, 'delete_file', {'projectId': project_id, 'name': name},
@@ -80,6 +88,32 @@ class Files:
         return project_id, compile_id
 
 
+PATCH_TEST_CASES = [
+    ('Py', 'file_patch.py', 'main.py', """diff --git a/main.py b/main.py
+index 5a38b08..72c8d1e 100644
+--- a/main.py
++++ b/main.py
+@@ -2,4 +2,4 @@
+ from AlgorithmImports import *
+ # endregion
+
+-a = 1
++a = 2
+"""),
+    ('C#', 'FilePatch.cs', 'Main.cs', """diff --git a/Main.cs b/Main.cs
+index 460447c..2fe2f42 100644
+--- a/Main.cs
++++ b/Main.cs
+@@ -5,6 +5,6 @@ public class MyAlgorithm : QCAlgorithm
+ {
+     public override void Initialize()
+     {
+-        var a = 1;
++        var a = 2;
+     }
+ }
+""")
+]
 # Test suite:
 class TestFiles:
 
@@ -411,6 +445,50 @@ class TestFiles:
                 {'name': self._default_file_names[language][0][2:]},
                 # Try to update the file contents to a blank file.
                 {'content': ''},
+            ]
+        )
+        # Delete the project to clean up.
+        await Project.delete(id_)
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize(
+        'language, algo, file_name, patch', PATCH_TEST_CASES
+    )
+    async def test_patch_file(self, language, algo, file_name, patch):
+        # Create and compile the project.
+        project_id, _ = await Files.setup_project(language, algo)
+        # Update the contents of the default code file.
+        await Files.patch(project_id, patch)
+        # Ensure the file content was updated.
+        response = await Files.read(project_id, name=file_name)
+        assert len(response.files) == 1
+        file = response.files[0]
+        assert 'a = 1' not in file.content
+        assert 'a = 2' in file.content
+        # Delete the project to clean up.
+        await Project.delete(project_id)
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize(
+        'language, algo, file_name, patch', PATCH_TEST_CASES
+    )
+    async def test_patch_file_contents_with_invalid_args(
+            self, language, algo, file_name, patch):
+        # Create and compile the project.
+        id_, _ = await Files.setup_project(language, algo)
+        # Test the invalid requests.
+        tool_name = 'patch_file'
+        minimal_payload = {'projectId': id_, 'patch': patch}
+        # Try to patch a file without providing all the data.
+        await ensure_request_raises_validation_error_when_omitting_an_arg(
+            tool_name, PatchFileRequest, minimal_payload
+        )
+        await ensure_request_fails_when_including_an_invalid_arg(
+            mcp, tool_name, minimal_payload, [
+                # Try to patch a file in a project that doesn't exist.
+                {'projectId': -1},
+                # Try to patch a file with an invalid git diff object.
+                {'patch': ' '}
             ]
         )
         # Delete the project to clean up.

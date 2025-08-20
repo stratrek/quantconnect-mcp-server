@@ -5,6 +5,7 @@ from models import (
     ReadFilesRequest,
     UpdateFileNameRequest,
     UpdateFileContentsRequest,
+    PatchFileRequest,
     DeleteFileRequest,
     RestResponse,
     ProjectFilesResponse
@@ -49,6 +50,14 @@ def register_file_tools(mcp):
             model: UpdateFileContentsRequest) -> ProjectFilesResponse:
         """Update the contents of a file."""
         return await post('/files/update', add_code_source_id(model))
+
+    # Update lines (patch)
+    @mcp.tool(
+        annotations={'title': 'Patch file', 'idempotentHint': True}
+    )
+    async def patch_file(model: PatchFileRequest) -> RestResponse:
+        """Apply a patch (unified diff) to a file in a project."""
+        return await post('/files/patch', add_code_source_id(model))
         
     # Delete
     @mcp.tool(annotations={'title': 'Delete file', 'idempotentHint': True})
