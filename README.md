@@ -806,7 +806,8 @@ List all your past and current live trading deployments.
 
 | Parameter | Type | Description |
 | -------- | ------- | ------- |
-| `status` | `status enum` *optional* | Status of the live algorithms to include in the response. |
+| `projectId` | `integer` *optional* | Id of the project to include in response. If you omit this property, the response includes all your projects. |
+| `status` | `status enum` *optional* | Status of the live deployments to include in the response. If you omit this property, the response includes deployments with any status. |
 
 *This tool modifies it's environment.*
 
