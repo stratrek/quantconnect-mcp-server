@@ -261,9 +261,16 @@ class TestLive:
         # Try to list the live algorithms.
         algorithms = await Live.list()
         assert algorithms
+        # Try to list the algorithms of a single project.
+        id_ = [algo.projectId for algo in algorithms][0]
+        algorithms = await Live.list(projectId=id_)
+        assert algorithms
+        for algo in algorithms:
+            assert algo.projectId == id_
         # Try to list the algorithms that have stopped.
         algorithms = await Live.list(status='Stopped')
         assert algorithms
         for algo in algorithms:
             assert algo.status == 'Stopped'
+
 
