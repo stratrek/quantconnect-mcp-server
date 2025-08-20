@@ -24,7 +24,7 @@ def register_project_tools(mcp):
     # Read (singular)
     @mcp.tool(annotations={'title': 'Read project', 'readOnlyHint': True})
     async def read_project(model: ReadProjectRequest) -> ProjectListResponse:
-        """List the details of a project."""
+        """List the details of a project or a set of recent projects."""
         return await post('/projects/read', model)
     
     # Read (all)

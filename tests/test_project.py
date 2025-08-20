@@ -30,11 +30,11 @@ class Project:
         return output_model.projects[0]
 
     @staticmethod
-    async def read(id_):
+    async def read(**kwargs):
         output_model = await validate_models(
-            mcp, 'read_project', {'projectId': id_}, ProjectListResponse
+            mcp, 'read_project', kwargs, ProjectListResponse
         )
-        return output_model.projects[0]
+        return output_model.projects
 
     @staticmethod
     async def update(id_, **kwargs):
@@ -91,17 +91,36 @@ class TestProject:
         language = 'Py'
         id_ = (await Project.create(name, language)).projectId
         # Read the project.
-        project = await Project.read(id_)
+        project = (await Project.read(projectId=id_))[0]
         # Test if the name and language are correct.
         assert project.name == name
         assert project.language.value == language
         # Delete the project to clean up.
         await Project.delete(id_)
+        # Test if we can read multiple projects.
+        num_projects = 2
+        ids = [
+            (await Project.create(name, language)).projectId
+            for i in range(num_projects)
+        ]
+        projects = await Project.read(end=num_projects)
+        assert len(projects) == num_projects
+        # Delete the projects to clean up.
+        for id_ in ids:
+            await Project.delete(id_)
 
     @pytest.mark.asyncio
     async def test_read_project_with_invalid_args(self):
-        # Try to read a project that doesn't exist.
-        await ensure_request_fails(mcp, 'read_project', {'projectId': -1})
+        payloads = [
+            # Try to read a project that doesn't exist.
+            {'projectId': -1},
+            # Try to read a list of projects where start >= end.
+            {'start': 1, 'end': 1},
+            {'start': 1, 'end': 0}
+        ]
+        for payload in payloads:
+            await ensure_request_fails(mcp, 'read_project', payload)
+        
 
     @pytest.mark.asyncio
     async def test_update_project(self):
@@ -112,14 +131,14 @@ class TestProject:
         new_name = f"Project {create_timestamp()}"
         await Project.update(id_, name=new_name)
         # Test if the new name is correct.
-        project = await Project.read(id_)
+        project = (await Project.read(projectId=id_))[0]
         assert project.name == new_name
         
         # Update the project description.
         new_description = f"Description {create_timestamp()}"
         await Project.update(id_, description=new_description)
         # Test if the new description is correct.
-        project = await Project.read(id_)
+        project = (await Project.read(projectId=id_))[0]
         assert project.description == new_description
         
         # Update the project name and description.
@@ -129,7 +148,7 @@ class TestProject:
             id_, name=new_name, description=new_description
         )
         # Test if the new name & description are correct.
-        project = await Project.read(id_)
+        project = (await Project.read(projectId=id_))[0]
         assert project.name == new_name
         assert project.description == new_description
 
