@@ -229,24 +229,20 @@ class TestFiles:
         else:
             name = 'TestFile2.cs'
         content = self._basic_code_file[language]
-        file = (await Files.create(id_, name, content=content)).files[0]
-        assert file.name == name
-        assert file.content == content
+        await Files.create(id_, name, content=content)
         # Test adding a research file with contents to the project. 
         if language == 'Py':
             name = 'test_file_3.py'
         else:
             name = 'TestFile3.ipynb'
         content = json.dumps(self._basic_research_file[language])
-        file = (await Files.create(id_, name, content=content)).files[0]
-        assert file.name == name
-        assert file.content == content
+        await Files.create(id_, name, content=content)
         # Test adding a directory.
         if language == 'Py':
             name = 'test_dir/test_file_4.py'
         else:
             name = 'TestDir/TestFile4.cs'
-        await Files.create(id_, name)  # Response is {'success': True}
+        await Files.create(id_, name)
         # Delete the project to clean up.
         await Project.delete(id_)
 
@@ -410,7 +406,8 @@ class TestFiles:
         # Update the contents of the default code file.
         name = self._default_file_names[language][0]
         content = self._basic_code_file[language]
-        response = await Files.update(id_, name=name, content=content)
+        await Files.update(id_, name=name, content=content)
+        response = await Files.read(id_, name=name)
         assert len(response.files) == 1
         file = response.files[0]
         assert file.name == name
