@@ -20,8 +20,11 @@ from tools.mcp_server_version import register_mcp_server_version_tools
 
 transport = os.getenv('MCP_TRANSPORT', 'stdio')
 
+# Load the server instructions.
+with open('../src/instructions.md', 'r', encoding='utf-8') as file:
+    instructions = file.read()
 # Initialize the FastMCP server.
-mcp = FastMCP('quantconnect', host="0.0.0.0")
+mcp = FastMCP('quantconnect', instructions, host="0.0.0.0")
 
 # Register all the tools.
 registration_functions = [
