@@ -28,8 +28,6 @@ To connect local MCP clients (like Claude Desktop) to the QC MCP Server, follow 
         "-e", "QUANTCONNECT_API_TOKEN",
         "-e", "AGENT_NAME",
         "--platform", "<your_platform>",
-        "--name",
-        "quantconnect-mcp-server",
         "quantconnect/mcp-server"
       ],
       "env": {
