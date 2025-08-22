@@ -1,8 +1,6 @@
-import sys, os
+import os
 from mcp.server.fastmcp import FastMCP
 
-# Set the path to ensure we can import the src.__init__.py file.
-sys.path.append(os.getcwd())
 from tools.account import register_account_tools
 from tools.project import register_project_tools
 from tools.project_collaboration import register_project_collaboration_tools
