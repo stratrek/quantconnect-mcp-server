@@ -243,8 +243,8 @@ class TestBacktest:
     @pytest.mark.parametrize(
         'language, algo', 
         [
-            ('Py', 'runtime_error.py'),
-            ('C#', 'RuntimeError.cs')
+            ('Py', 'algorithms/runtime_error.py'),
+            ('C#', 'algorithms/RuntimeError.cs')
         ]
     )
     async def test_list_backtests_with_runtime_error(self, language, algo):
