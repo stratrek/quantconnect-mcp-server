@@ -74,7 +74,7 @@ class Files:
         project_id = (await Project.create(language=language)).projectId
         if algorithm:
             # Read the algorithm file.
-            with open('algorithms/' + algorithm, 'r') as file:
+            with open('tests/algorithms/' + algorithm, 'r') as file:
                 content = file.read()
             # Update the project to the new algorithm.
             await Files.update(
