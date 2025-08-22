@@ -19,6 +19,7 @@ jobs:
           - backtests
           - compile
           - files
+          - initialization
           - lean_versions
           - mcp_server_version
           - object_store
@@ -41,7 +42,7 @@ jobs:
 
       - name: Run test_${{ matrix.script }}.py
         run: |-
-          cd tests; pytest test_${{ matrix.script }}.py
+          pytest tests/test_${{ matrix.script }}.py
         env:
           QUANTCONNECT_USER_ID: ${{ secrets.QUANTCONNECT_USER_ID }}
           QUANTCONNECT_API_TOKEN: ${{ secrets.QUANTCONNECT_API_TOKEN }}

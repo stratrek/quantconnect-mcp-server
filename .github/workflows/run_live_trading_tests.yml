@@ -21,7 +21,7 @@ jobs:
 
       - name: Run tests
         run: |-
-          cd tests; pytest test_live.py test_live_charts.py test_live_commands.py test_live_insights.py test_live_logs.py test_live_orders.py
+          pytest tests/ -k "test_live"
         env:
           QUANTCONNECT_USER_ID: ${{ secrets.QUANTCONNECT_USER_ID }}
           QUANTCONNECT_API_TOKEN: ${{ secrets.QUANTCONNECT_API_TOKEN }}
