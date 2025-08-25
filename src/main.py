@@ -15,6 +15,7 @@ from tools.object_store import register_object_store_tools
 from tools.lean_versions import register_lean_version_tools
 from tools.ai import register_ai_tools
 from tools.mcp_server_version import register_mcp_server_version_tools
+from organization_workspace import OrganizationWorkspace
 
 transport = os.getenv('MCP_TRANSPORT', 'stdio')
 
@@ -45,5 +46,7 @@ for f in registration_functions:
     f(mcp)
 
 if __name__ == "__main__":
+    # Load the organization workspace.
+    OrganizationWorkspace.load()
     # Run the server.
     mcp.run(transport=transport)
