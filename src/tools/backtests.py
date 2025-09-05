@@ -47,7 +47,8 @@ def register_backtest_tools(mcp):
         
         # Create a simplified response with only the required fields
         # The API response is a dict, not an object with attributes
-        if isinstance(response, dict) and 'backtest' in response and response['backtest']:
+        # Must check success=True before proceeding
+        if isinstance(response, dict) and response.get('success') and 'backtest' in response and response['backtest']:
             from models import BacktestResult
             backtest_data = response['backtest']
             simplified_result = BacktestResult(
@@ -64,12 +65,22 @@ def register_backtest_tools(mcp):
                 errors=response.get('errors', [])
             )
         
-        # If no backtest data, return minimal response (no fallback to full response)
+        # If API call failed or no backtest data, return actual errors from API
         from models import BacktestResponse
+        api_errors = []
+        if isinstance(response, dict):
+            # Extract errors from API response if available
+            api_errors = response.get('errors', [])
+            if not api_errors and not response.get('success'):
+                api_errors = ["API call failed but no specific error provided"]
+        
+        if not api_errors:
+            api_errors = ["No backtest data available"]
+            
         return BacktestResponse(
             backtest=None,
             success=False,
-            errors=["No backtest data available"]
+            errors=api_errors
         )
 
     # Read a summary of all the backtests.
