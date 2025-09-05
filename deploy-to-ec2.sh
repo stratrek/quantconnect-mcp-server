@@ -9,7 +9,7 @@ set -e  # Exit on any error
 EC2_INSTANCE_IP="100.24.29.103"
 EC2_USER="ubuntu"
 SSH_KEY_PATH="$HOME/.ssh/quantconnect-mcp-key.pem"
-REPO_URL="git@github.com:stratrek/quantconnect-mcp-server.git"
+REPO_URL="https://github.com/stratrek/quantconnect-mcp-server.git"
 DEPLOY_DIR="stratrek-quantconnect-mcp-server"
 SERVICE_NAME="quantconnect-mcp.service"
 BACKUP_DIR="quantconnect-mcp-deploy-backup-$(date +%Y%m%d-%H%M%S)"
