@@ -39,6 +39,31 @@ def register_backtest_tools(mcp):
         """Read the results of a backtest."""
         return await post('/backtests/read', model)
 
+    # Read brief status for a single backtest.
+    @mcp.tool(annotations={'title': 'Read backtest brief', 'readOnlyHint': True})
+    async def backtest_result_brief(model: ReadBacktestRequest) -> BacktestResponse:
+        """Read a brief summary of backtest results containing only status, error, and hasInitializeError."""
+        response = await post('/backtests/read', model)
+        
+        # Create a simplified response with only the required fields
+        if hasattr(response, 'backtest') and response.backtest:
+            from models import BacktestResult
+            simplified_result = BacktestResult(
+                status=response.backtest.status,
+                error=response.backtest.error,
+                hasInitializeError=response.backtest.hasInitializeError
+            )
+            
+            # Return the simplified response
+            from models import BacktestResponse
+            return BacktestResponse(
+                backtest=simplified_result,
+                success=response.success,
+                errors=response.errors
+            )
+        
+        return response
+
     # Read a summary of all the backtests.
     @mcp.tool(annotations={'title': 'List backtests', 'readOnlyHint': True})
     async def list_backtests(

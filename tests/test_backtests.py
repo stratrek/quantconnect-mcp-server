@@ -51,6 +51,15 @@ class Backtest:
         return output_model.backtest
 
     @staticmethod
+    async def read_brief(project_id, backtest_id):
+        output_model = await validate_models(
+            mcp, 'backtest_result_brief', 
+            {'projectId': project_id, 'backtestId': backtest_id}, 
+            BacktestResponse
+        )
+        return output_model.backtest
+
+    @staticmethod
     async def update(project_id, backtest_id, **kwargs):
         output_model = await validate_models(
             mcp, 'update_backtest', 
@@ -175,11 +184,57 @@ class TestBacktest:
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize('language', ['Py', 'C#'])
+    async def test_backtest_result_brief(self, language):
+        # Create and compile the project.
+        project_id, compile_id = await Files.setup_project(language)
+        # Start a backtest.
+        parameters = {'a': 0, 'b': 0.0, 'c': 'foo'}
+        backtest = await Backtest.create(
+            project_id, compile_id, parameters=parameters
+        )
+        backtest_id = backtest.backtestId
+        # Try to read the full backtest result.
+        full_backtest = await Backtest.read(project_id, backtest_id)
+        # Try to read the brief backtest result.
+        brief_backtest = await Backtest.read_brief(project_id, backtest_id)
+        # Verify that brief result contains only the expected fields.
+        assert brief_backtest.projectId is None  # Should not be included
+        assert brief_backtest.backtestId is None  # Should not be included
+        assert brief_backtest.name is None  # Should not be included
+        assert brief_backtest.parameterSet is None  # Should not be included
+        # Verify that the essential fields are present.
+        assert brief_backtest.status == full_backtest.status
+        assert brief_backtest.error == full_backtest.error
+        assert brief_backtest.hasInitializeError == full_backtest.hasInitializeError
+        # Delete the project to clean up.
+        await Project.delete(project_id)
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize('language', ['Py', 'C#'])
     async def test_read_backtest_with_invalid_args(self, language):
         # Start a backtest.
         project_id, backtest_id = await Backtest.run_algorithm(language)
         # Test the invalid requests.
         tool_name = 'read_backtest'
+        class_ = ReadBacktestRequest
+        minimal_payload = {'projectId': project_id, 'backtestId': backtest_id}
+        await ensure_request_raises_validation_error_when_omitting_an_arg(
+            tool_name, class_, minimal_payload
+        )
+        # Try to read a backtest that doesn't exist.
+        await ensure_request_fails(
+            mcp, tool_name, minimal_payload | {'backtestId': ' '}
+        )
+        # Delete the project to clean up.
+        await Project.delete(project_id)
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize('language', ['Py', 'C#'])
+    async def test_backtest_result_brief_with_invalid_args(self, language):
+        # Start a backtest.
+        project_id, backtest_id = await Backtest.run_algorithm(language)
+        # Test the invalid requests.
+        tool_name = 'backtest_result_brief'
         class_ = ReadBacktestRequest
         minimal_payload = {'projectId': project_id, 'backtestId': backtest_id}
         await ensure_request_raises_validation_error_when_omitting_an_arg(
