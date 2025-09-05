@@ -64,6 +64,31 @@ This is the **official QuantConnect MCP Server** - a Python-based Model Context 
 - **stdio**: Default for MCP clients like Claude Desktop
 - **http/streamable-http**: For HTTP-based integrations, uses `MCP_HOST` and `MCP_PORT`
 
+## Deployment
+
+### **EC2 Deployment**
+- **Script**: `./deploy-to-ec2.sh` - Automated deployment to existing EC2 instance
+- **Features**: Installs uv, clones repo, configures systemd service, health checks
+- **Target**: EC2 instance i-016344569a36c13f8 (100.24.29.103:8001)
+- **Environment**: Copies existing QuantConnect credentials from previous deployment
+
+### **Environment Configuration**
+- **Template**: `deploy.env.example` - Copy to `.env` on EC2 with your credentials
+- **Variables**: QUANTCONNECT_USER_ID, QUANTCONNECT_API_TOKEN, MCP_TRANSPORT=http
+- **Port**: Current deployment runs on port 8001 (configurable via MCP_PORT)
+
+### **Service Management**
+```bash
+# View logs
+ssh -i ~/.ssh/quantconnect-mcp-key.pem ubuntu@100.24.29.103 'sudo journalctl -u quantconnect-mcp.service -f'
+
+# Restart service  
+ssh -i ~/.ssh/quantconnect-mcp-key.pem ubuntu@100.24.29.103 'sudo systemctl restart quantconnect-mcp.service'
+
+# Check status
+ssh -i ~/.ssh/quantconnect-mcp-key.pem ubuntu@100.24.29.103 'sudo systemctl status quantconnect-mcp.service'
+```
+
 ## Testing Strategy
 
 The repository includes extensive test coverage with real algorithm examples in `tests/algorithms/` for various scenarios (parameter optimization, live trading, error handling, etc.). Tests are organized by functionality and include both unit tests and integration tests.

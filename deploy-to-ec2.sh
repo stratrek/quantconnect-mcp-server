@@ -334,12 +334,21 @@ run_remote "
         exit 1
     fi
     
+    # Get the configured port from .env file
+    if [[ -f $DEPLOY_DIR/.env ]]; then
+        MCP_PORT=\$(grep '^MCP_PORT=' $DEPLOY_DIR/.env | cut -d'=' -f2)
+        echo \"Configured port: \$MCP_PORT\"
+    else
+        MCP_PORT=8000
+        echo \"Default port: \$MCP_PORT\"
+    fi
+    
     # Check if port is listening
     sleep 3
-    if netstat -tlnp 2>/dev/null | grep -q ':8000'; then
-        echo 'Service is listening on port 8000 ✅'
+    if netstat -tlnp 2>/dev/null | grep -q \":\$MCP_PORT\"; then
+        echo \"Service is listening on port \$MCP_PORT ✅\"
     else
-        echo 'Service is not listening on expected port ❌'
+        echo \"Service is not listening on expected port \$MCP_PORT ❌\"
         echo 'Open ports:'
         netstat -tlnp 2>/dev/null | grep LISTEN || true
         exit 1
@@ -348,7 +357,11 @@ run_remote "
 
 # Test MCP endpoint
 log_info "Testing MCP endpoint..."
-HTTP_RESPONSE=$(curl -s -H "Accept: text/event-stream" "http://$EC2_INSTANCE_IP:8000/mcp" || echo "CONNECTION_FAILED")
+
+# Get the configured port from the remote .env file  
+REMOTE_PORT=$(run_remote "grep '^MCP_PORT=' $DEPLOY_DIR/.env | cut -d'=' -f2" 2>/dev/null || echo "8000")
+
+HTTP_RESPONSE=$(curl -s -H "Accept: text/event-stream" "http://$EC2_INSTANCE_IP:$REMOTE_PORT/mcp" || echo "CONNECTION_FAILED")
 
 if [[ "$HTTP_RESPONSE" == "CONNECTION_FAILED" ]]; then
     log_error "Cannot connect to MCP endpoint"
@@ -370,7 +383,7 @@ echo "======================================"
 echo ""
 log_success "Enhanced QuantConnect MCP server is running"
 echo "📍 Instance: $EC2_INSTANCE_IP"
-echo "🌐 Endpoint: http://$EC2_INSTANCE_IP:8000/mcp"
+echo "🌐 Endpoint: http://$EC2_INSTANCE_IP:$REMOTE_PORT/mcp"
 echo "📁 Deploy Dir: /home/ubuntu/$DEPLOY_DIR"
 echo "💾 Backup: /home/ubuntu/$BACKUP_DIR"
 echo ""
@@ -387,6 +400,6 @@ echo "  ✅ Development dependencies and documentation"
 echo ""
 
 log_info "Test the deployment with:"
-echo "curl -X POST http://$EC2_INSTANCE_IP:8000/mcp \\"
+echo "curl -X POST http://$EC2_INSTANCE_IP:$REMOTE_PORT/mcp \\"
 echo "  -H 'Content-Type: application/json' \\"
 echo "  -d '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\"}'"
