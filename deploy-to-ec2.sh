@@ -85,9 +85,9 @@ if ! git status > /dev/null 2>&1; then
     exit 1
 fi
 
-# Check for uncommitted changes
-if [[ -n $(git status --porcelain) ]]; then
-    log_warning "You have uncommitted changes. Consider committing them first."
+# Check for uncommitted changes to tracked files only
+if [[ -n $(git diff --name-only) || -n $(git diff --cached --name-only) ]]; then
+    log_warning "You have uncommitted changes to tracked files. Consider committing them first."
     read -p "Continue anyway? (y/N): " -n 1 -r
     echo
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
