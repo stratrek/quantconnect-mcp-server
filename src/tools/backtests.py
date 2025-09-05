@@ -45,28 +45,23 @@ def register_backtest_tools(mcp):
         """Read a brief summary of backtest results containing only status, error, and hasInitializeError."""
         response = await post('/backtests/read', model)
         
-        # Log the response for debugging
-        import logging
-        logger = logging.getLogger('quantconnect-mcp')
-        logger.info(f"🔍 Backtest read API response type: {type(response)}")
-        logger.info(f"🔍 Backtest read API response attributes: {dir(response)}")
-        logger.info(f"🔍 Backtest read API response content: {response}")
-        
         # Create a simplified response with only the required fields
-        if hasattr(response, 'backtest') and response.backtest:
+        # The API response is a dict, not an object with attributes
+        if isinstance(response, dict) and 'backtest' in response and response['backtest']:
             from models import BacktestResult
+            backtest_data = response['backtest']
             simplified_result = BacktestResult(
-                status=response.backtest.status,
-                error=response.backtest.error,
-                hasInitializeError=response.backtest.hasInitializeError
+                status=backtest_data['status'],
+                error=backtest_data['error'],
+                hasInitializeError=backtest_data['hasInitializeError']
             )
             
             # Return the simplified response
             from models import BacktestResponse
             return BacktestResponse(
                 backtest=simplified_result,
-                success=response.success,
-                errors=response.errors
+                success=response['success'],
+                errors=response.get('errors', [])
             )
         
         # If no backtest data, return minimal response (no fallback to full response)
