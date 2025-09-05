@@ -10,6 +10,7 @@ from models import (
     UpdateBacktestRequest,
     DeleteBacktestRequest,
     BacktestResponse,
+    BacktestResult,
     #LoadingChartResponse,
     ReadChartResponse,
     BacktestOrdersResponse,
@@ -33,6 +34,52 @@ def register_backtest_tools(mcp):
         """Create a new backtest request and get the backtest Id."""
         return await post('/backtests/create', model)
 
+    # Create a brief version that only returns essential fields
+    @mcp.tool(
+        annotations={
+            'title': 'Create backtest brief',
+            'destructiveHint': False
+        }
+    )
+    async def create_backtest_brief(
+            model: CreateBacktestRequest) -> BacktestResponse:
+        """Create a new backtest request and get only the essential fields (backtestId and status)."""
+        response = await post('/backtests/create', model)
+        
+        # Create a simplified response with only the essential fields
+        # The API response is a dict, not an object with attributes
+        # Must check success=True before proceeding
+        if isinstance(response, dict) and response.get('success') and 'backtest' in response and response['backtest']:
+            backtest_data = response['backtest']
+            simplified_result = BacktestResult(
+                backtestId=backtest_data['backtestId'],
+                status=backtest_data['status']
+            )
+            
+            # Return the simplified response
+            return BacktestResponse(
+                backtest=simplified_result,
+                success=response['success'],
+                errors=response.get('errors', [])
+            )
+        
+        # If API call failed or no backtest data, return actual errors from API
+        api_errors = []
+        if isinstance(response, dict):
+            # Extract errors from API response if available
+            api_errors = response.get('errors', [])
+            if not api_errors and not response.get('success'):
+                api_errors = ["API call failed but no specific error provided"]
+        
+        if not api_errors:
+            api_errors = ["No backtest data available"]
+            
+        return BacktestResponse(
+            backtest=None,
+            success=False,
+            errors=api_errors
+        )
+
     # Read statistics for a single backtest.
     @mcp.tool(annotations={'title': 'Read backtest', 'readOnlyHint': True})
     async def read_backtest(model: ReadBacktestRequest) -> BacktestResponse:
@@ -49,7 +96,6 @@ def register_backtest_tools(mcp):
         # The API response is a dict, not an object with attributes
         # Must check success=True before proceeding
         if isinstance(response, dict) and response.get('success') and 'backtest' in response and response['backtest']:
-            from models import BacktestResult
             backtest_data = response['backtest']
             simplified_result = BacktestResult(
                 status=backtest_data['status'],
@@ -58,7 +104,6 @@ def register_backtest_tools(mcp):
             )
             
             # Return the simplified response
-            from models import BacktestResponse
             return BacktestResponse(
                 backtest=simplified_result,
                 success=response['success'],
@@ -66,7 +111,6 @@ def register_backtest_tools(mcp):
             )
         
         # If API call failed or no backtest data, return actual errors from API
-        from models import BacktestResponse
         api_errors = []
         if isinstance(response, dict):
             # Extract errors from API response if available
