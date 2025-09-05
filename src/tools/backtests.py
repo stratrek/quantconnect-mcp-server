@@ -62,7 +62,13 @@ def register_backtest_tools(mcp):
                 errors=response.errors
             )
         
-        return response
+        # If no backtest data, return minimal response (no fallback to full response)
+        from models import BacktestResponse
+        return BacktestResponse(
+            backtest=None,
+            success=False,
+            errors=["No backtest data available"]
+        )
 
     # Read a summary of all the backtests.
     @mcp.tool(annotations={'title': 'List backtests', 'readOnlyHint': True})
