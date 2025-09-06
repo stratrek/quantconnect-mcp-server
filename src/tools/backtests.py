@@ -5,184 +5,266 @@ from models import (
     ReadBacktestChartRequest,
     ReadBacktestOrdersRequest,
     ReadBacktestInsightsRequest,
-    BacktestReportRequest,
     ListBacktestRequest,
     UpdateBacktestRequest,
     DeleteBacktestRequest,
     BacktestResponse,
     BacktestResult,
-    #LoadingChartResponse,
+    # LoadingChartResponse,
     ReadChartResponse,
     BacktestOrdersResponse,
     BacktestInsightsResponse,
     BacktestSummaryResponse,
-    BacktestReport,
-    BacktestReportGeneratingResponse,
-    RestResponse
+    RestResponse,
 )
+
 
 def register_backtest_tools(mcp):
     # Create
-    @mcp.tool(
-        annotations={
-            'title': 'Create backtest',
-            'destructiveHint': False
-        }
-    )
-    async def create_backtest(
-            model: CreateBacktestRequest) -> BacktestResponse:
+    @mcp.tool(annotations={"title": "Create backtest", "destructiveHint": False})
+    async def create_backtest(model: CreateBacktestRequest) -> BacktestResponse:
         """Create a new backtest request and get the backtest Id."""
-        return await post('/backtests/create', model)
+        return await post("/backtests/create", model)
 
     # Create a brief version that only returns essential fields
-    @mcp.tool(
-        annotations={
-            'title': 'Create backtest brief',
-            'destructiveHint': False
-        }
-    )
-    async def create_backtest_brief(
-            model: CreateBacktestRequest) -> BacktestResponse:
+    @mcp.tool(annotations={"title": "Create backtest brief", "destructiveHint": False})
+    async def create_backtest_brief(model: CreateBacktestRequest) -> BacktestResponse:
         """Create a new backtest request and get only the essential fields (backtestId and status)."""
-        response = await post('/backtests/create', model)
-        
+        response = await post("/backtests/create", model)
+
         # Create a simplified response with only the essential fields
         # The API response is a dict, not an object with attributes
         # Must check success=True before proceeding
-        if isinstance(response, dict) and response.get('success') and 'backtest' in response and response['backtest']:
-            backtest_data = response['backtest']
+        if (
+            isinstance(response, dict)
+            and response.get("success")
+            and "backtest" in response
+            and response["backtest"]
+        ):
+            backtest_data = response["backtest"]
             simplified_result = BacktestResult(
-                backtestId=backtest_data['backtestId'],
-                status=backtest_data['status']
+                backtestId=backtest_data["backtestId"], status=backtest_data["status"]
             )
-            
+
             # Return the simplified response
             return BacktestResponse(
                 backtest=simplified_result,
-                success=response['success'],
-                errors=response.get('errors', [])
+                success=response["success"],
+                errors=response.get("errors", []),
             )
-        
+
         # If API call failed or no backtest data, return actual errors from API
         api_errors = []
         if isinstance(response, dict):
             # Extract errors from API response if available
-            api_errors = response.get('errors', [])
-            if not api_errors and not response.get('success'):
+            api_errors = response.get("errors", [])
+            if not api_errors and not response.get("success"):
                 api_errors = ["API call failed but no specific error provided"]
-        
+
         if not api_errors:
             api_errors = ["No backtest data available"]
-            
-        return BacktestResponse(
-            backtest=None,
-            success=False,
-            errors=api_errors
-        )
+
+        return BacktestResponse(backtest=None, success=False, errors=api_errors)
 
     # Read statistics for a single backtest.
-    @mcp.tool(annotations={'title': 'Read backtest', 'readOnlyHint': True})
+    @mcp.tool(annotations={"title": "Read backtest", "readOnlyHint": True})
     async def read_backtest(model: ReadBacktestRequest) -> BacktestResponse:
         """Read the results of a backtest."""
-        return await post('/backtests/read', model)
+        return await post("/backtests/read", model)
 
     # Read brief status for a single backtest.
-    @mcp.tool(annotations={'title': 'Read backtest brief', 'readOnlyHint': True})
+    @mcp.tool(annotations={"title": "Read backtest brief", "readOnlyHint": True})
     async def backtest_result_brief(model: ReadBacktestRequest) -> BacktestResponse:
         """Read a brief summary of backtest results containing only status, error, and hasInitializeError."""
-        response = await post('/backtests/read', model)
-        
+        response = await post("/backtests/read", model)
+
         # Create a simplified response with only the required fields
         # The API response is a dict, not an object with attributes
         # Must check success=True before proceeding
-        if isinstance(response, dict) and response.get('success') and 'backtest' in response and response['backtest']:
-            backtest_data = response['backtest']
+        if (
+            isinstance(response, dict)
+            and response.get("success")
+            and "backtest" in response
+            and response["backtest"]
+        ):
+            backtest_data = response["backtest"]
             simplified_result = BacktestResult(
-                status=backtest_data['status'],
-                error=backtest_data['error'],
-                hasInitializeError=backtest_data['hasInitializeError']
+                status=backtest_data["status"],
+                error=backtest_data["error"],
+                hasInitializeError=backtest_data["hasInitializeError"],
             )
-            
+
             # Return the simplified response
             return BacktestResponse(
                 backtest=simplified_result,
-                success=response['success'],
-                errors=response.get('errors', [])
+                success=response["success"],
+                errors=response.get("errors", []),
             )
-        
+
         # If API call failed or no backtest data, return actual errors from API
         api_errors = []
         if isinstance(response, dict):
             # Extract errors from API response if available
-            api_errors = response.get('errors', [])
-            if not api_errors and not response.get('success'):
+            api_errors = response.get("errors", [])
+            if not api_errors and not response.get("success"):
                 api_errors = ["API call failed but no specific error provided"]
-        
+
         if not api_errors:
             api_errors = ["No backtest data available"]
-            
-        return BacktestResponse(
-            backtest=None,
-            success=False,
-            errors=api_errors
-        )
+
+        return BacktestResponse(backtest=None, success=False, errors=api_errors)
+
+    # Read key statistics for a single backtest.
+    @mcp.tool(annotations={"title": "Read backtest statistics", "readOnlyHint": True})
+    async def read_backtest_statistics(model: ReadBacktestRequest) -> BacktestResponse:
+        """Read key performance statistics from backtest results."""
+        response = await post("/backtests/read", model)
+
+        # Create a simplified response with only the key statistics
+        # The API response is a dict, not an object with attributes
+        # Must check success=True before proceeding
+        if (
+            isinstance(response, dict)
+            and response.get("success")
+            and "backtest" in response
+            and response["backtest"]
+        ):
+            backtest_data = response["backtest"]
+
+            # Build simplified result with key statistics only
+            simplified_result = BacktestResult(
+                # Basic identification and status
+                backtestId=backtest_data.get("backtestId"),
+                status=backtest_data.get("status"),
+                completed=backtest_data.get("completed"),
+                error=backtest_data.get("error"),
+                # Time information
+                backtestStart=backtest_data.get("backtestStart"),
+                backtestEnd=backtest_data.get("backtestEnd"),
+                tradeableDates=backtest_data.get("tradeableDates"),
+            )
+
+            # Extract key statistics if available
+            if "statistics" in backtest_data and backtest_data["statistics"]:
+                stats = backtest_data["statistics"]
+                # Create a new statistics object with only key fields
+                key_stats = {}
+                # Map of field names (some have spaces, some use underscores)
+                important_stats = [
+                    "Total Return",
+                    "Sharpe Ratio",
+                    "Drawdown",
+                    "Win Rate",
+                    "Net Profit",
+                    "Total Orders",
+                    "Compounding Annual Return",
+                    "Profit-Loss Ratio",
+                    "Average Win",
+                    "Average Loss",
+                    "Expectancy",
+                    "Total Fees",
+                ]
+                for stat in important_stats:
+                    if stat in stats:
+                        key_stats[stat] = stats[stat]
+                if key_stats:
+                    simplified_result.statistics = key_stats
+
+            # Extract key performance metrics if available
+            if (
+                "totalPerformance" in backtest_data
+                and backtest_data["totalPerformance"]
+            ):
+                perf = backtest_data["totalPerformance"]
+                key_perf = {}
+
+                # Extract portfolio statistics if available
+                if "portfolioStatistics" in perf and perf["portfolioStatistics"]:
+                    portfolio = perf["portfolioStatistics"]
+                    key_perf["portfolioStatistics"] = {
+                        "startEquity": portfolio.get("startEquity"),
+                        "endEquity": portfolio.get("endEquity"),
+                        "totalNetProfit": portfolio.get("totalNetProfit"),
+                        "sharpeRatio": portfolio.get("sharpeRatio"),
+                        "drawdown": portfolio.get("drawdown"),
+                        "compoundingAnnualReturn": portfolio.get(
+                            "compoundingAnnualReturn"
+                        ),
+                        "winRate": portfolio.get("winRate"),
+                        "profitLossRatio": portfolio.get("profitLossRatio"),
+                        "expectancy": portfolio.get("expectancy"),
+                        "totalFees": portfolio.get("totalFees"),
+                    }
+
+                if key_perf:
+                    simplified_result.totalPerformance = key_perf
+
+            # Return the simplified response
+            return BacktestResponse(
+                backtest=simplified_result,
+                success=response["success"],
+                errors=response.get("errors", []),
+            )
+
+        # If API call failed or no backtest data, return actual errors from API
+        api_errors = []
+        if isinstance(response, dict):
+            # Extract errors from API response if available
+            api_errors = response.get("errors", [])
+            if not api_errors and not response.get("success"):
+                api_errors = ["API call failed but no specific error provided"]
+
+        if not api_errors:
+            api_errors = ["No backtest data available"]
+
+        return BacktestResponse(backtest=None, success=False, errors=api_errors)
 
     # Read a summary of all the backtests.
-    @mcp.tool(annotations={'title': 'List backtests', 'readOnlyHint': True})
-    async def list_backtests(
-            model: ListBacktestRequest) -> BacktestSummaryResponse:
+    @mcp.tool(annotations={"title": "List backtests", "readOnlyHint": True})
+    async def list_backtests(model: ListBacktestRequest) -> BacktestSummaryResponse:
         """List all the backtests for the project."""
-        return await post('/backtests/list', model)
+        return await post("/backtests/list", model)
 
     # Read the chart of a single backtest.
-    @mcp.tool(
-        annotations={'title': 'Read backtest chart', 'readOnlyHint': True}
-    )
-    async def read_backtest_chart(
-            model: ReadBacktestChartRequest) -> ReadChartResponse:
+    @mcp.tool(annotations={"title": "Read backtest chart", "readOnlyHint": True})
+    async def read_backtest_chart(model: ReadBacktestChartRequest) -> ReadChartResponse:
         """Read a chart from a backtest."""
-        return await post('/backtests/chart/read', model)
-    
+        return await post("/backtests/chart/read", model)
+
     # Read the orders of a single backtest.
-    @mcp.tool(
-        annotations={'title': 'Read backtest orders', 'readOnlyHint': True}
-    )
+    @mcp.tool(annotations={"title": "Read backtest orders", "readOnlyHint": True})
     async def read_backtest_orders(
-            model: ReadBacktestOrdersRequest) -> BacktestOrdersResponse:
+        model: ReadBacktestOrdersRequest,
+    ) -> BacktestOrdersResponse:
         """Read out the orders of a backtest."""
-        return await post('/backtests/orders/read', model)
-    
+        return await post("/backtests/orders/read", model)
+
     # Read the insights of a single backtest.
-    @mcp.tool(
-        annotations={'title': 'Read backtest insights', 'readOnlyHint': True}
-    )
+    @mcp.tool(annotations={"title": "Read backtest insights", "readOnlyHint": True})
     async def read_backtest_insights(
-            model: ReadBacktestInsightsRequest) -> BacktestInsightsResponse:
+        model: ReadBacktestInsightsRequest,
+    ) -> BacktestInsightsResponse:
         """Read out the insights of a backtest."""
-        return await post('/backtests/read/insights', model)
-    
+        return await post("/backtests/read/insights", model)
+
     ## Read the report of a single backtest.
-    #@mcp.tool(
+    # @mcp.tool(
     #    annotations={'title': 'Read backtest report', 'readOnlyHint': True}
-    #)
-    #async def read_backtest_report(
+    # )
+    # async def read_backtest_report(
     #        model: BacktestReportRequest
     #    ) -> BacktestReport | BacktestReportGeneratingResponse:
     #    """Read out the report of a backtest."""
     #    return await post('/backtests/read/report', model)
 
     # Update
-    @mcp.tool(
-        annotations={'title': 'Update backtest', 'idempotentHint': True}
-    )
+    @mcp.tool(annotations={"title": "Update backtest", "idempotentHint": True})
     async def update_backtest(model: UpdateBacktestRequest) -> RestResponse:
         """Update the name or note of a backtest."""
-        return await post('/backtests/update', model)
-    
+        return await post("/backtests/update", model)
+
     # Delete
-    @mcp.tool(
-        annotations={'title': 'Delete backtest', 'idempotentHint': True}
-    )
+    @mcp.tool(annotations={"title": "Delete backtest", "idempotentHint": True})
     async def delete_backtest(model: DeleteBacktestRequest) -> RestResponse:
         """Delete a backtest from a project."""
-        return await post('/backtests/delete', model)
+        return await post("/backtests/delete", model)

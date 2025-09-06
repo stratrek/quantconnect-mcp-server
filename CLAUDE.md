@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is the **official QuantConnect MCP Server** - a Python-based Model Context Protocol server that enables AI assistants (like Claude) to interact with the QuantConnect platform API. It provides 64+ tools for project management, backtesting, live trading, optimization, and algorithm development.
+This is the **official QuantConnect MCP Server** - a Python-based Model Context Protocol server that enables AI assistants (like Claude) to interact with the QuantConnect platform API. It provides 67+ tools for project management, backtesting, live trading, optimization, and algorithm development.
 
 ## Development Commands
 
@@ -55,6 +55,16 @@ This is the **official QuantConnect MCP Server** - a Python-based Model Context 
 - Use PEP8 style for Python code (snake_case)
 - Compile code before running backtests using `create_compile` and `read_compile`
 - Use `patch_file` tool for line-specific updates instead of `update_file_contents` when more efficient
+
+### Token-Optimized Brief Tools
+
+For improved LLM performance and reduced token usage, the server includes specialized "brief" versions of key tools:
+
+- **`create_backtest_brief`**: Creates backtests with minimal response data (only `backtestId` and `status`)
+- **`backtest_result_brief`**: Checks backtest status efficiently (only `status`, `error`, and `hasInitializeError`)
+- **`read_backtest_statistics`**: Returns key performance metrics (~20 statistics instead of 100+ fields)
+
+These tools reduce API response size by 80-90%+ compared to their full counterparts, making them ideal for automated workflows and AI assistants. Use these when you only need essential status information or key statistics rather than complete backtest data.
 
 ### Authentication
 - Requires `QUANTCONNECT_USER_ID` and `QUANTCONNECT_API_TOKEN` environment variables
