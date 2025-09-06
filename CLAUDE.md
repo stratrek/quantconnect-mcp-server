@@ -61,7 +61,7 @@ This is the **official QuantConnect MCP Server** - a Python-based Model Context 
 For improved LLM performance and reduced token usage, the server includes specialized "brief" versions of key tools:
 
 - **`create_backtest_brief`**: Creates backtests with minimal response data (only `backtestId` and `status`)
-- **`backtest_result_brief`**: Checks backtest status efficiently (only `status`, `error`, and `hasInitializeError`)
+- **`read_backtest_brief`**: Checks backtest status efficiently (only `status`, `error`, and `hasInitializeError`)
 - **`read_backtest_statistics`**: Returns key performance metrics (~20 statistics instead of 100+ fields)
 
 These tools reduce API response size by 80-90%+ compared to their full counterparts, making them ideal for automated workflows and AI assistants. Use these when you only need essential status information or key statistics rather than complete backtest data.

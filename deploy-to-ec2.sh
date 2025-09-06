@@ -392,12 +392,6 @@ echo "  View logs:    ssh -i $SSH_KEY_PATH $EC2_USER@$EC2_INSTANCE_IP 'sudo jour
 echo "  Service status: ssh -i $SSH_KEY_PATH $EC2_USER@$EC2_INSTANCE_IP 'sudo systemctl status $SERVICE_NAME'"
 echo "  Restart:      ssh -i $SSH_KEY_PATH $EC2_USER@$EC2_INSTANCE_IP 'sudo systemctl restart $SERVICE_NAME'"
 echo ""
-echo "Your enhanced features are now available:"
-echo "  ✅ Enhanced logging system with file output"
-echo "  ✅ backtest_result_brief tool for optimized queries"
-echo "  ✅ Better environment variable handling"
-echo "  ✅ Development dependencies and documentation"
-echo ""
 
 log_info "Test the deployment with:"
 echo "curl -X POST http://$EC2_INSTANCE_IP:$REMOTE_PORT/mcp \\"

@@ -53,7 +53,7 @@ class Backtest:
     @staticmethod
     async def read_brief(project_id, backtest_id):
         output_model = await validate_models(
-            mcp, 'backtest_result_brief', 
+            mcp, 'read_backtest_brief', 
             {'projectId': project_id, 'backtestId': backtest_id}, 
             BacktestResponse
         )
@@ -184,7 +184,7 @@ class TestBacktest:
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize('language', ['Py', 'C#'])
-    async def test_backtest_result_brief(self, language):
+    async def test_read_backtest_brief(self, language):
         # Create and compile the project.
         project_id, compile_id = await Files.setup_project(language)
         # Start a backtest.
@@ -230,11 +230,11 @@ class TestBacktest:
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize('language', ['Py', 'C#'])
-    async def test_backtest_result_brief_with_invalid_args(self, language):
+    async def test_read_backtest_brief_with_invalid_args(self, language):
         # Start a backtest.
         project_id, backtest_id = await Backtest.run_algorithm(language)
         # Test the invalid requests.
-        tool_name = 'backtest_result_brief'
+        tool_name = 'read_backtest_brief'
         class_ = ReadBacktestRequest
         minimal_payload = {'projectId': project_id, 'backtestId': backtest_id}
         await ensure_request_raises_validation_error_when_omitting_an_arg(

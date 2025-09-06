@@ -249,3 +249,188 @@
 2025-09-05 18:09:37,755 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
 2025-09-05 18:09:37,772 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
 2025-09-05 18:09:37,773 - mcp.server.lowlevel.server - INFO - Processing request of type ListResourcesRequest
+2025-09-05 18:24:16,751 - quantconnect-mcp - INFO - ============================================================
+2025-09-05 18:24:16,751 - quantconnect-mcp - INFO - 🚀 QuantConnect MCP Server Starting Up
+2025-09-05 18:24:16,751 - quantconnect-mcp - INFO - ⏰ Startup time: 2025-09-05T18:24:16.751286
+2025-09-05 18:24:16,751 - quantconnect-mcp - INFO - 🌐 Transport: stdio
+2025-09-05 18:24:16,751 - quantconnect-mcp - INFO - 📍 Host: 127.0.0.1
+2025-09-05 18:24:16,751 - quantconnect-mcp - INFO - 🔌 Port: 8000
+2025-09-05 18:24:16,751 - quantconnect-mcp - INFO - 👤 User ID: 379979
+2025-09-05 18:24:16,751 - quantconnect-mcp - INFO - 🔑 API Token: ✅ Set
+2025-09-05 18:24:16,751 - quantconnect-mcp - INFO - ============================================================
+2025-09-05 18:24:16,751 - quantconnect-mcp - INFO - 🔧 Initializing FastMCP server with host=127.0.0.1, port=8000
+2025-09-05 18:24:16,758 - quantconnect-mcp - INFO - 📋 Starting tool registration process...
+2025-09-05 18:24:17,181 - quantconnect-mcp - INFO - ✅ Tool registration process completed successfully
+2025-09-05 18:24:17,182 - quantconnect-mcp - INFO - 📡 Starting QuantConnect MCP Server with stdio transport
+2025-09-05 18:24:17,182 - quantconnect-mcp - INFO - 🔄 Server is running
+2025-09-05 18:24:17,193 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2025-09-05 18:24:17,209 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
+2025-09-05 18:24:17,210 - mcp.server.lowlevel.server - INFO - Processing request of type ListResourcesRequest
+2025-09-05 18:24:35,536 - mcp.server.lowlevel.server - INFO - Processing request of type ListResourcesRequest
+2025-09-05 18:28:26,741 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-09-05 18:28:27,195 - httpx - INFO - HTTP Request: POST https://www.quantconnect.com/api/v2/projects/create "HTTP/1.1 200 OK"
+2025-09-05 18:28:41,721 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-09-05 18:28:42,112 - httpx - INFO - HTTP Request: POST https://www.quantconnect.com/api/v2/files/update "HTTP/1.1 200 OK"
+2025-09-05 18:28:52,468 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-09-05 18:28:52,977 - httpx - INFO - HTTP Request: POST https://www.quantconnect.com/api/v2/compile/create "HTTP/1.1 200 OK"
+2025-09-05 18:28:57,580 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-09-05 18:28:58,337 - httpx - INFO - HTTP Request: POST https://www.quantconnect.com/api/v2/compile/read "HTTP/1.1 200 OK"
+2025-09-05 18:29:08,652 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-09-05 18:29:09,512 - httpx - INFO - HTTP Request: POST https://www.quantconnect.com/api/v2/backtests/create "HTTP/1.1 200 OK"
+2025-09-05 18:29:29,834 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-09-05 18:29:30,195 - httpx - INFO - HTTP Request: POST https://www.quantconnect.com/api/v2/backtests/read "HTTP/1.1 200 OK"
+2025-09-05 18:29:44,141 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-09-05 18:29:44,466 - httpx - INFO - HTTP Request: POST https://www.quantconnect.com/api/v2/backtests/read "HTTP/1.1 200 OK"
+2025-09-05 18:29:44,835 - mcp.server.lowlevel.server - INFO - Warning: UserWarning: Pydantic serializer warnings:
+  PydanticSerializationUnexpectedValue(Expected `StatisticsResult` - serialized value may not be as expected [input_value={'Sharpe Ratio': '0.585',..., 'Total Fees': '$1.67'}, input_type=dict])
+  PydanticSerializationUnexpectedValue(Expected `AlgorithmPerformance` - serialized value may not be as expected [input_value={'portfolioStatistics': {...'0', 'totalFees': None}}, input_type=dict])
+2025-09-05 18:29:49,399 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-09-05 18:29:49,724 - httpx - INFO - HTTP Request: POST https://www.quantconnect.com/api/v2/backtests/read "HTTP/1.1 200 OK"
+2025-09-05 18:30:05,060 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-09-05 18:30:05,536 - httpx - INFO - HTTP Request: POST https://www.quantconnect.com/api/v2/backtests/orders/read "HTTP/1.1 200 OK"
+2025-09-05 18:30:18,904 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-09-05 18:30:24,763 - httpx - INFO - HTTP Request: POST https://www.quantconnect.com/api/v2/backtests/read/insights "HTTP/1.1 200 OK"
+2025-09-05 18:30:39,439 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-09-05 18:30:40,431 - httpx - INFO - HTTP Request: POST https://www.quantconnect.com/api/v2/backtests/chart/read "HTTP/1.1 200 OK"
+2025-09-05 18:34:35,245 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-09-05 18:34:35,665 - httpx - INFO - HTTP Request: POST https://www.quantconnect.com/api/v2/backtests/read "HTTP/1.1 200 OK"
+2025-09-05 18:34:36,027 - mcp.server.lowlevel.server - INFO - Warning: UserWarning: Pydantic serializer warnings:
+  PydanticSerializationUnexpectedValue(Expected `StatisticsResult` - serialized value may not be as expected [input_value={'Sharpe Ratio': '0.585',..., 'Total Fees': '$1.67'}, input_type=dict])
+  PydanticSerializationUnexpectedValue(Expected `AlgorithmPerformance` - serialized value may not be as expected [input_value={'portfolioStatistics': {...'0', 'totalFees': None}}, input_type=dict])
+2025-09-05 18:35:10,963 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-09-05 18:35:11,338 - httpx - INFO - HTTP Request: POST https://www.quantconnect.com/api/v2/backtests/read "HTTP/1.1 200 OK"
+2025-09-05 18:35:11,703 - mcp.server.lowlevel.server - INFO - Warning: UserWarning: Pydantic serializer warnings:
+  PydanticSerializationUnexpectedValue(Expected `StatisticsResult` - serialized value may not be as expected [input_value={'Sharpe Ratio': '0.585',..., 'Total Fees': '$1.67'}, input_type=dict])
+  PydanticSerializationUnexpectedValue(Expected `AlgorithmPerformance` - serialized value may not be as expected [input_value={'portfolioStatistics': {...'0', 'totalFees': None}}, input_type=dict])
+2025-09-05 18:35:33,884 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-09-05 18:35:34,278 - httpx - INFO - HTTP Request: POST https://www.quantconnect.com/api/v2/backtests/read "HTTP/1.1 200 OK"
+2025-09-05 18:35:34,679 - mcp.server.lowlevel.server - INFO - Warning: UserWarning: Pydantic serializer warnings:
+  PydanticSerializationUnexpectedValue(Expected `StatisticsResult` - serialized value may not be as expected [input_value={'Sharpe Ratio': '0.585',..., 'Total Fees': '$1.67'}, input_type=dict])
+  PydanticSerializationUnexpectedValue(Expected `AlgorithmPerformance` - serialized value may not be as expected [input_value={'portfolioStatistics': {...'0', 'totalFees': None}}, input_type=dict])
+2025-09-05 18:35:54,059 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-09-05 18:35:54,447 - httpx - INFO - HTTP Request: POST https://www.quantconnect.com/api/v2/backtests/read "HTTP/1.1 200 OK"
+2025-09-05 18:35:54,809 - mcp.server.lowlevel.server - INFO - Warning: UserWarning: Pydantic serializer warnings:
+  PydanticSerializationUnexpectedValue(Expected `StatisticsResult` - serialized value may not be as expected [input_value={'Sharpe Ratio': '0.585',..., 'Total Fees': '$1.67'}, input_type=dict])
+  PydanticSerializationUnexpectedValue(Expected `AlgorithmPerformance` - serialized value may not be as expected [input_value={'portfolioStatistics': {...'0', 'totalFees': None}}, input_type=dict])
+2025-09-05 18:36:56,903 - quantconnect-mcp - INFO - ============================================================
+2025-09-05 18:36:56,903 - quantconnect-mcp - INFO - 🚀 QuantConnect MCP Server Starting Up
+2025-09-05 18:36:56,904 - quantconnect-mcp - INFO - ⏰ Startup time: 2025-09-05T18:36:56.904023
+2025-09-05 18:36:56,904 - quantconnect-mcp - INFO - 🌐 Transport: stdio
+2025-09-05 18:36:56,904 - quantconnect-mcp - INFO - 📍 Host: 127.0.0.1
+2025-09-05 18:36:56,904 - quantconnect-mcp - INFO - 🔌 Port: 8000
+2025-09-05 18:36:56,904 - quantconnect-mcp - INFO - 👤 User ID: 379979
+2025-09-05 18:36:56,904 - quantconnect-mcp - INFO - 🔑 API Token: ✅ Set
+2025-09-05 18:36:56,904 - quantconnect-mcp - INFO - ============================================================
+2025-09-05 18:36:56,904 - quantconnect-mcp - INFO - 🔧 Initializing FastMCP server with host=127.0.0.1, port=8000
+2025-09-05 18:36:56,910 - quantconnect-mcp - INFO - 📋 Starting tool registration process...
+2025-09-05 18:36:57,323 - quantconnect-mcp - INFO - ✅ Tool registration process completed successfully
+2025-09-05 18:36:57,323 - quantconnect-mcp - INFO - 📡 Starting QuantConnect MCP Server with stdio transport
+2025-09-05 18:36:57,323 - quantconnect-mcp - INFO - 🔄 Server is running
+2025-09-05 18:36:57,334 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2025-09-05 18:36:57,352 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
+2025-09-05 18:36:57,353 - mcp.server.lowlevel.server - INFO - Processing request of type ListResourcesRequest
+2025-09-05 18:37:13,726 - mcp.server.lowlevel.server - INFO - Processing request of type ListResourcesRequest
+2025-09-05 18:38:02,765 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-09-05 18:38:03,162 - httpx - INFO - HTTP Request: POST https://www.quantconnect.com/api/v2/backtests/read "HTTP/1.1 200 OK"
+2025-09-05 18:39:01,887 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-09-05 18:39:02,280 - httpx - INFO - HTTP Request: POST https://www.quantconnect.com/api/v2/backtests/read "HTTP/1.1 200 OK"
+2025-09-05 18:43:47,148 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-09-05 18:43:47,512 - httpx - INFO - HTTP Request: POST https://www.quantconnect.com/api/v2/backtests/read "HTTP/1.1 200 OK"
+2025-09-05 18:44:09,076 - quantconnect-mcp - INFO - ============================================================
+2025-09-05 18:44:09,076 - quantconnect-mcp - INFO - 🚀 QuantConnect MCP Server Starting Up
+2025-09-05 18:44:09,076 - quantconnect-mcp - INFO - ⏰ Startup time: 2025-09-05T18:44:09.076442
+2025-09-05 18:44:09,076 - quantconnect-mcp - INFO - 🌐 Transport: stdio
+2025-09-05 18:44:09,076 - quantconnect-mcp - INFO - 📍 Host: 127.0.0.1
+2025-09-05 18:44:09,076 - quantconnect-mcp - INFO - 🔌 Port: 8000
+2025-09-05 18:44:09,076 - quantconnect-mcp - INFO - 👤 User ID: 379979
+2025-09-05 18:44:09,076 - quantconnect-mcp - INFO - 🔑 API Token: ✅ Set
+2025-09-05 18:44:09,076 - quantconnect-mcp - INFO - ============================================================
+2025-09-05 18:44:09,076 - quantconnect-mcp - INFO - 🔧 Initializing FastMCP server with host=127.0.0.1, port=8000
+2025-09-05 18:44:09,082 - quantconnect-mcp - INFO - 📋 Starting tool registration process...
+2025-09-05 18:44:09,142 - quantconnect-mcp - INFO - ============================================================
+2025-09-05 18:44:09,142 - quantconnect-mcp - INFO - 🚀 QuantConnect MCP Server Starting Up
+2025-09-05 18:44:09,142 - quantconnect-mcp - INFO - ⏰ Startup time: 2025-09-05T18:44:09.142364
+2025-09-05 18:44:09,142 - quantconnect-mcp - INFO - 🌐 Transport: stdio
+2025-09-05 18:44:09,142 - quantconnect-mcp - INFO - 📍 Host: 127.0.0.1
+2025-09-05 18:44:09,142 - quantconnect-mcp - INFO - 🔌 Port: 8000
+2025-09-05 18:44:09,142 - quantconnect-mcp - INFO - 👤 User ID: 379979
+2025-09-05 18:44:09,142 - quantconnect-mcp - INFO - 🔑 API Token: ✅ Set
+2025-09-05 18:44:09,142 - quantconnect-mcp - INFO - ============================================================
+2025-09-05 18:44:09,142 - quantconnect-mcp - INFO - 🔧 Initializing FastMCP server with host=127.0.0.1, port=8000
+2025-09-05 18:44:09,148 - quantconnect-mcp - INFO - 📋 Starting tool registration process...
+2025-09-05 18:44:09,494 - quantconnect-mcp - INFO - ✅ Tool registration process completed successfully
+2025-09-05 18:44:09,494 - quantconnect-mcp - INFO - 📡 Starting QuantConnect MCP Server with stdio transport
+2025-09-05 18:44:09,494 - quantconnect-mcp - INFO - 🔄 Server is running
+2025-09-05 18:44:09,582 - quantconnect-mcp - INFO - ✅ Tool registration process completed successfully
+2025-09-05 18:44:09,582 - quantconnect-mcp - INFO - 📡 Starting QuantConnect MCP Server with stdio transport
+2025-09-05 18:44:09,582 - quantconnect-mcp - INFO - 🔄 Server is running
+2025-09-05 18:44:09,592 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2025-09-05 18:44:09,609 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
+2025-09-05 18:44:09,610 - mcp.server.lowlevel.server - INFO - Processing request of type ListResourcesRequest
+2025-09-05 18:44:10,506 - quantconnect-mcp - INFO - ============================================================
+2025-09-05 18:44:10,506 - quantconnect-mcp - INFO - 🚀 QuantConnect MCP Server Starting Up
+2025-09-05 18:44:10,506 - quantconnect-mcp - INFO - ⏰ Startup time: 2025-09-05T18:44:10.506375
+2025-09-05 18:44:10,506 - quantconnect-mcp - INFO - 🌐 Transport: stdio
+2025-09-05 18:44:10,506 - quantconnect-mcp - INFO - 📍 Host: 127.0.0.1
+2025-09-05 18:44:10,506 - quantconnect-mcp - INFO - 🔌 Port: 8000
+2025-09-05 18:44:10,506 - quantconnect-mcp - INFO - 👤 User ID: 379979
+2025-09-05 18:44:10,506 - quantconnect-mcp - INFO - 🔑 API Token: ✅ Set
+2025-09-05 18:44:10,506 - quantconnect-mcp - INFO - ============================================================
+2025-09-05 18:44:10,506 - quantconnect-mcp - INFO - 🔧 Initializing FastMCP server with host=127.0.0.1, port=8000
+2025-09-05 18:44:10,512 - quantconnect-mcp - INFO - 📋 Starting tool registration process...
+2025-09-05 18:44:10,590 - quantconnect-mcp - INFO - ============================================================
+2025-09-05 18:44:10,590 - quantconnect-mcp - INFO - 🚀 QuantConnect MCP Server Starting Up
+2025-09-05 18:44:10,590 - quantconnect-mcp - INFO - ⏰ Startup time: 2025-09-05T18:44:10.590603
+2025-09-05 18:44:10,590 - quantconnect-mcp - INFO - 🌐 Transport: stdio
+2025-09-05 18:44:10,590 - quantconnect-mcp - INFO - 📍 Host: 127.0.0.1
+2025-09-05 18:44:10,590 - quantconnect-mcp - INFO - 🔌 Port: 8000
+2025-09-05 18:44:10,590 - quantconnect-mcp - INFO - 👤 User ID: 379979
+2025-09-05 18:44:10,590 - quantconnect-mcp - INFO - 🔑 API Token: ✅ Set
+2025-09-05 18:44:10,590 - quantconnect-mcp - INFO - ============================================================
+2025-09-05 18:44:10,591 - quantconnect-mcp - INFO - 🔧 Initializing FastMCP server with host=127.0.0.1, port=8000
+2025-09-05 18:44:10,597 - quantconnect-mcp - INFO - 📋 Starting tool registration process...
+2025-09-05 18:44:10,919 - quantconnect-mcp - INFO - ✅ Tool registration process completed successfully
+2025-09-05 18:44:10,919 - quantconnect-mcp - INFO - 📡 Starting QuantConnect MCP Server with stdio transport
+2025-09-05 18:44:10,919 - quantconnect-mcp - INFO - 🔄 Server is running
+2025-09-05 18:44:10,929 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2025-09-05 18:44:10,949 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
+2025-09-05 18:44:10,950 - mcp.server.lowlevel.server - INFO - Processing request of type ListResourcesRequest
+2025-09-05 18:44:11,000 - quantconnect-mcp - INFO - ✅ Tool registration process completed successfully
+2025-09-05 18:44:11,000 - quantconnect-mcp - INFO - 📡 Starting QuantConnect MCP Server with stdio transport
+2025-09-05 18:44:11,000 - quantconnect-mcp - INFO - 🔄 Server is running
+2025-09-05 18:44:11,010 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2025-09-05 18:44:11,026 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
+2025-09-05 18:44:11,028 - mcp.server.lowlevel.server - INFO - Processing request of type ListResourcesRequest
+2025-09-05 18:44:11,915 - quantconnect-mcp - INFO - ============================================================
+2025-09-05 18:44:11,915 - quantconnect-mcp - INFO - 🚀 QuantConnect MCP Server Starting Up
+2025-09-05 18:44:11,915 - quantconnect-mcp - INFO - ⏰ Startup time: 2025-09-05T18:44:11.915956
+2025-09-05 18:44:11,916 - quantconnect-mcp - INFO - 🌐 Transport: stdio
+2025-09-05 18:44:11,916 - quantconnect-mcp - INFO - 📍 Host: 127.0.0.1
+2025-09-05 18:44:11,916 - quantconnect-mcp - INFO - 🔌 Port: 8000
+2025-09-05 18:44:11,916 - quantconnect-mcp - INFO - 👤 User ID: 379979
+2025-09-05 18:44:11,916 - quantconnect-mcp - INFO - 🔑 API Token: ✅ Set
+2025-09-05 18:44:11,916 - quantconnect-mcp - INFO - ============================================================
+2025-09-05 18:44:11,916 - quantconnect-mcp - INFO - 🔧 Initializing FastMCP server with host=127.0.0.1, port=8000
+2025-09-05 18:44:11,922 - quantconnect-mcp - INFO - 📋 Starting tool registration process...
+2025-09-05 18:44:12,323 - quantconnect-mcp - INFO - ✅ Tool registration process completed successfully
+2025-09-05 18:44:12,324 - quantconnect-mcp - INFO - 📡 Starting QuantConnect MCP Server with stdio transport
+2025-09-05 18:44:12,324 - quantconnect-mcp - INFO - 🔄 Server is running
+2025-09-05 18:44:46,912 - quantconnect-mcp - INFO - ============================================================
+2025-09-05 18:44:46,912 - quantconnect-mcp - INFO - 🚀 QuantConnect MCP Server Starting Up
+2025-09-05 18:44:46,912 - quantconnect-mcp - INFO - ⏰ Startup time: 2025-09-05T18:44:46.912619
+2025-09-05 18:44:46,912 - quantconnect-mcp - INFO - 🌐 Transport: stdio
+2025-09-05 18:44:46,912 - quantconnect-mcp - INFO - 📍 Host: 127.0.0.1
+2025-09-05 18:44:46,912 - quantconnect-mcp - INFO - 🔌 Port: 8000
+2025-09-05 18:44:46,912 - quantconnect-mcp - INFO - 👤 User ID: 379979
+2025-09-05 18:44:46,912 - quantconnect-mcp - INFO - 🔑 API Token: ✅ Set
+2025-09-05 18:44:46,912 - quantconnect-mcp - INFO - ============================================================
+2025-09-05 18:44:46,912 - quantconnect-mcp - INFO - 🔧 Initializing FastMCP server with host=127.0.0.1, port=8000
+2025-09-05 18:44:46,919 - quantconnect-mcp - INFO - 📋 Starting tool registration process...
+2025-09-05 18:44:47,337 - quantconnect-mcp - INFO - ✅ Tool registration process completed successfully
+2025-09-05 18:44:47,337 - quantconnect-mcp - INFO - 📡 Starting QuantConnect MCP Server with stdio transport
+2025-09-05 18:44:47,337 - quantconnect-mcp - INFO - 🔄 Server is running
+2025-09-05 18:44:47,348 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2025-09-05 18:44:47,366 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
+2025-09-05 18:44:47,368 - mcp.server.lowlevel.server - INFO - Processing request of type ListResourcesRequest
+2025-09-05 18:45:13,163 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-09-05 18:45:13,583 - httpx - INFO - HTTP Request: POST https://www.quantconnect.com/api/v2/backtests/read "HTTP/1.1 200 OK"

@@ -16,6 +16,9 @@ from models import (
     BacktestInsightsResponse,
     BacktestSummaryResponse,
     RestResponse,
+    StatisticsResult,
+    AlgorithmPerformance,
+    PortfolioStatistics,
 )
 
 
@@ -74,7 +77,7 @@ def register_backtest_tools(mcp):
 
     # Read brief status for a single backtest.
     @mcp.tool(annotations={"title": "Read backtest brief", "readOnlyHint": True})
-    async def backtest_result_brief(model: ReadBacktestRequest) -> BacktestResponse:
+    async def read_backtest_brief(model: ReadBacktestRequest) -> BacktestResponse:
         """Read a brief summary of backtest results containing only status, error, and hasInitializeError."""
         response = await post("/backtests/read", model)
 
@@ -144,60 +147,56 @@ def register_backtest_tools(mcp):
                 tradeableDates=backtest_data.get("tradeableDates"),
             )
 
-            # Extract key statistics if available
+            # Extract statistics if available - let Pydantic handle the field aliases
             if "statistics" in backtest_data and backtest_data["statistics"]:
                 stats = backtest_data["statistics"]
-                # Create a new statistics object with only key fields
-                key_stats = {}
-                # Map of field names (some have spaces, some use underscores)
-                important_stats = [
-                    "Total Return",
-                    "Sharpe Ratio",
-                    "Drawdown",
-                    "Win Rate",
-                    "Net Profit",
-                    "Total Orders",
-                    "Compounding Annual Return",
-                    "Profit-Loss Ratio",
-                    "Average Win",
-                    "Average Loss",
-                    "Expectancy",
-                    "Total Fees",
-                ]
-                for stat in important_stats:
-                    if stat in stats:
-                        key_stats[stat] = stats[stat]
-                if key_stats:
-                    simplified_result.statistics = key_stats
+                # Pass the statistics data directly to StatisticsResult
+                # Pydantic will automatically map aliases like "Total Orders" to Total_Orders
+                simplified_result.statistics = StatisticsResult(**stats)
 
+            # Skip totalPerformance for now to isolate the issue
+            # TODO: Re-enable after fixing validation issues
             # Extract key performance metrics if available
-            if (
-                "totalPerformance" in backtest_data
-                and backtest_data["totalPerformance"]
-            ):
-                perf = backtest_data["totalPerformance"]
-                key_perf = {}
+            # if (
+            #     "totalPerformance" in backtest_data
+            #     and backtest_data["totalPerformance"]
+            # ):
+            #     perf = backtest_data["totalPerformance"]
+            #     key_perf = {}
 
-                # Extract portfolio statistics if available
-                if "portfolioStatistics" in perf and perf["portfolioStatistics"]:
-                    portfolio = perf["portfolioStatistics"]
-                    key_perf["portfolioStatistics"] = {
-                        "startEquity": portfolio.get("startEquity"),
-                        "endEquity": portfolio.get("endEquity"),
-                        "totalNetProfit": portfolio.get("totalNetProfit"),
-                        "sharpeRatio": portfolio.get("sharpeRatio"),
-                        "drawdown": portfolio.get("drawdown"),
-                        "compoundingAnnualReturn": portfolio.get(
-                            "compoundingAnnualReturn"
-                        ),
-                        "winRate": portfolio.get("winRate"),
-                        "profitLossRatio": portfolio.get("profitLossRatio"),
-                        "expectancy": portfolio.get("expectancy"),
-                        "totalFees": portfolio.get("totalFees"),
-                    }
-
-                if key_perf:
-                    simplified_result.totalPerformance = key_perf
+            #     # Extract portfolio statistics if available
+            #     if "portfolioStatistics" in perf and perf["portfolioStatistics"]:
+            #         portfolio = perf["portfolioStatistics"]
+                    
+            #         def safe_float(value):
+            #             """Convert string numbers to floats, return None for invalid values"""
+            #             if value is None:
+            #                 return None
+            #             try:
+            #                 return float(value)
+            #             except (ValueError, TypeError):
+            #                 return None
+                    
+            #         portfolio_stats = PortfolioStatistics(
+            #             startEquity=safe_float(portfolio.get("startEquity")),
+            #             endEquity=safe_float(portfolio.get("endEquity")),
+            #             totalNetProfit=safe_float(portfolio.get("totalNetProfit")),
+            #             sharpeRatio=safe_float(portfolio.get("sharpeRatio")),
+            #             drawdown=safe_float(portfolio.get("drawdown")),
+            #             compoundingAnnualReturn=safe_float(portfolio.get(
+            #                 "compoundingAnnualReturn"
+            #             )),
+            #             winRate=safe_float(portfolio.get("winRate")),
+            #             profitLossRatio=safe_float(portfolio.get("profitLossRatio")),
+            #             expectancy=safe_float(portfolio.get("expectancy")),
+            #             totalFees=safe_float(portfolio.get("totalFees")),
+            #         )
+                    
+            #         algorithm_perf = AlgorithmPerformance(
+            #             portfolioStatistics=portfolio_stats
+            #         )
+                    
+            #         simplified_result.totalPerformance = algorithm_perf
 
             # Return the simplified response
             return BacktestResponse(

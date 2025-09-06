@@ -71,7 +71,7 @@ For improved LLM performance and reduced token usage, we've added lightweight "b
 | Tool | Purpose | Benefits |
 |------|---------|----------|
 | `create_backtest_brief` | Create backtests with minimal response data | Returns only `backtestId` and `status` instead of full backtest object |
-| `backtest_result_brief` | Check backtest status efficiently | Returns only `status`, `error`, and `hasInitializeError` fields |
+| `read_backtest_brief` | Check backtest status efficiently | Returns only `status`, `error`, and `hasInitializeError` fields |
 | `read_backtest_statistics` | Get key performance metrics from backtests | Returns ~20 essential statistics instead of 100+ fields |
 
 These tools are designed to reduce API response size by 90%+ compared to their full counterparts, making them ideal for AI assistants and automated workflows.
@@ -104,7 +104,7 @@ These tools are designed to reduce API response size by 90%+ compared to their f
 | `create_backtest`                     | Create a new backtest request and get the backtest Id.                                           |
 | `create_backtest_brief` ⚡            | **NEW**: Create a backtest with minimal response data to reduce token usage.                     |
 | `read_backtest`                       | Read the results of a backtest.                                                                  |
-| `backtest_result_brief` ⚡            | **NEW**: Get brief backtest status (status, error, hasInitializeError only).                    |
+| `read_backtest_brief` ⚡            | **NEW**: Get brief backtest status (status, error, hasInitializeError only).                    |
 | `read_backtest_statistics` ⚡         | **NEW**: Get key performance statistics from backtest results.                                  |
 | `list_backtests`                      | List all the backtests for the project.                                                          |
 | `read_backtest_chart`                 | Read a chart from a backtest.                                                                    |
@@ -584,7 +584,7 @@ _This tool may interact with an "open world" of external entities._
 
 ---
 
-**Tool:** `backtest_result_brief` ⚡
+**Tool:** `read_backtest_brief` ⚡
 
 Read a brief summary of backtest results containing only status, error, and hasInitializeError.
 
