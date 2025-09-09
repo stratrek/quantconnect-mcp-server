@@ -73,10 +73,11 @@ For improved LLM performance and reduced token usage, we've added lightweight "b
 | `create_backtest_brief` | Create backtests with minimal response data | Returns only `backtestId` and `status` instead of full backtest object |
 | `read_backtest_brief` | Check backtest status efficiently | Returns only `status`, `error`, and `hasInitializeError` fields |
 | `read_backtest_statistics` | Get key performance metrics from backtests | Returns ~20 essential statistics instead of 100+ fields |
+| `wait_for_backtest` | Poll for backtest completion | Efficiently waits for completion with configurable timeout and polling interval |
 
 These tools are designed to reduce API response size by 90%+ compared to their full counterparts, making them ideal for AI assistants and automated workflows.
 
-## Available Tools (67)
+## Available Tools (68)
 
 | Tools provided by this Server         | Short Description                                                                                |
 | ------------------------------------- | ------------------------------------------------------------------------------------------------ |
@@ -106,6 +107,7 @@ These tools are designed to reduce API response size by 90%+ compared to their f
 | `read_backtest`                       | Read the results of a backtest.                                                                  |
 | `read_backtest_brief` ⚡            | **NEW**: Get brief backtest status (status, error, hasInitializeError only).                    |
 | `read_backtest_statistics` ⚡         | **NEW**: Get key performance statistics from backtest results.                                  |
+| `wait_for_backtest` ⚡                | **NEW**: Poll for backtest completion with configurable timeout and interval.                   |
 | `list_backtests`                      | List all the backtests for the project.                                                          |
 | `read_backtest_chart`                 | Read a chart from a backtest.                                                                    |
 | `read_backtest_orders`                | Read out the orders of a backtest.                                                               |
@@ -598,6 +600,25 @@ _This tool doesn't modify it's environment._
 _This tool may interact with an "open world" of external entities._
 
 **Note:** This is a token-optimized version that returns only `status`, `error`, and `hasInitializeError` fields instead of the full backtest result object, reducing response size by 90%+ for improved LLM performance.
+
+---
+
+**Tool:** `wait_for_backtest` ⚡
+
+Poll for backtest completion with configurable timeout and interval.
+
+| Parameter         | Type      | Description                                                              |
+| ----------------- | --------- | ------------------------------------------------------------------------ |
+| `projectId`       | `integer` | Id of the project that contains the backtest.                           |
+| `backtestId`      | `string`  | Id of the backtest to read.                                              |
+| `max_timeout`     | `integer` | Maximum time to wait in seconds (default: 90, max: 120).                |
+| `polling_interval`| `integer` | Time between polls in seconds (default: 10, min: 5).                    |
+
+_This tool doesn't modify it's environment._
+
+_This tool may interact with an "open world" of external entities._
+
+**Note:** This tool efficiently polls for backtest completion, returning immediately when the backtest finishes or timing out after the specified duration. Returns elapsed time information in the errors field.
 
 ---
 
