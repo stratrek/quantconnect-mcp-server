@@ -232,6 +232,7 @@ class BacktestReportRequest(BaseModel):
 class Status(Enum):
     Completed_ = 'Completed.'
     In_Queue___ = 'In Queue...'
+    In_Progress___ = 'In Progress...'
     Running_____ = '\'Running: _%\''
     Runtime_Error = 'Runtime Error'
 

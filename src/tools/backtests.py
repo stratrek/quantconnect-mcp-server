@@ -1,3 +1,5 @@
+import asyncio
+import time
 from api_connection import post
 from models import (
     CreateBacktestRequest,
@@ -167,7 +169,7 @@ def register_backtest_tools(mcp):
             #     # Extract portfolio statistics if available
             #     if "portfolioStatistics" in perf and perf["portfolioStatistics"]:
             #         portfolio = perf["portfolioStatistics"]
-                    
+
             #         def safe_float(value):
             #             """Convert string numbers to floats, return None for invalid values"""
             #             if value is None:
@@ -176,7 +178,7 @@ def register_backtest_tools(mcp):
             #                 return float(value)
             #             except (ValueError, TypeError):
             #                 return None
-                    
+
             #         portfolio_stats = PortfolioStatistics(
             #             startEquity=safe_float(portfolio.get("startEquity")),
             #             endEquity=safe_float(portfolio.get("endEquity")),
@@ -191,11 +193,11 @@ def register_backtest_tools(mcp):
             #             expectancy=safe_float(portfolio.get("expectancy")),
             #             totalFees=safe_float(portfolio.get("totalFees")),
             #         )
-                    
+
             #         algorithm_perf = AlgorithmPerformance(
             #             portfolioStatistics=portfolio_stats
             #         )
-                    
+
             #         simplified_result.totalPerformance = algorithm_perf
 
             # Return the simplified response
@@ -217,6 +219,105 @@ def register_backtest_tools(mcp):
             api_errors = ["No backtest data available"]
 
         return BacktestResponse(backtest=None, success=False, errors=api_errors)
+
+    # Poll for backtest completion
+    @mcp.tool(
+        annotations={"title": "Wait for backtest completion", "readOnlyHint": True}
+    )
+    async def wait_for_backtest(
+        model: ReadBacktestRequest, max_timeout: int = 90, polling_interval: int = 10
+    ) -> BacktestResponse:
+        """Poll for backtest completion with configurable timeout and interval.
+
+        Args:
+            model: The backtest request details
+            max_timeout: Maximum time to wait in seconds (default: 90, max: 120)
+            polling_interval: Time between polls in seconds (default: 10, min: 5)
+
+        Returns:
+            BacktestResponse with final status and elapsed time in errors if still running
+        """
+        # Validate and cap parameters
+        max_timeout = min(max_timeout, 120)  # Cap at 2 minutes
+        polling_interval = max(polling_interval, 5)  # Minimum 5 seconds
+
+        start_time = time.time()
+        elapsed_time = 0
+        polls_made = 0
+
+        while elapsed_time < max_timeout:
+            polls_made += 1
+
+            # Use existing read_backtest_brief function instead of duplicating code
+            response = await read_backtest_brief(model)
+
+            # Check if we have a successful response
+            if response.success and response.backtest:
+                # Handle both string and enum status values
+                status = response.backtest.status
+                if hasattr(status, 'value'):
+                    status = status.value.lower()
+                else:
+                    status = str(status).lower()
+
+                # Check if backtest is in a terminal state
+                # Note: API returns "Completed." with capital C and period
+                if status in [
+                    "completed.",
+                    "completed",
+                    "error",
+                    "runtime error",
+                    "cancelled",
+                ]:
+                    # Add timing information to response
+                    timing_info = (
+                        f"Completed after {elapsed_time:.1f}s ({polls_made} polls)"
+                    )
+                    errors = response.errors if response.errors else []
+                    errors.append(timing_info)
+
+                    return BacktestResponse(
+                        backtest=response.backtest,
+                        success=response.success,
+                        errors=errors,
+                    )
+
+            # If API call failed, return the error immediately
+            elif not response.success:
+                errors = response.errors if response.errors else ["API call failed"]
+                errors.append(
+                    f"Failed after {elapsed_time:.1f}s ({polls_made} polls)"
+                )
+                return BacktestResponse(backtest=None, success=False, errors=errors)
+
+            # Calculate elapsed time
+            elapsed_time = time.time() - start_time
+
+            # If we haven't exceeded timeout, wait before next poll
+            if elapsed_time < max_timeout:
+                remaining_time = max_timeout - elapsed_time
+                sleep_time = min(polling_interval, remaining_time)
+                await asyncio.sleep(sleep_time)
+                elapsed_time = time.time() - start_time
+
+        # Timeout reached - return last known state
+        timeout_error = (
+            f"Polling timeout after {max_timeout}s ({polls_made} polls made)"
+        )
+
+        # Try to return last known status if available
+        if response.success and response.backtest:
+            return BacktestResponse(
+                backtest=response.backtest,
+                success=False,  # Mark as unsuccessful due to timeout
+                errors=[timeout_error, f"Last status: {response.backtest.status}"],
+            )
+
+        return BacktestResponse(
+            backtest=None,
+            success=False,
+            errors=[timeout_error, "No backtest data available"],
+        )
 
     # Read a summary of all the backtests.
     @mcp.tool(annotations={"title": "List backtests", "readOnlyHint": True})
