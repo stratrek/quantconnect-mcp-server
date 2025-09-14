@@ -11,7 +11,6 @@ from models import (
     ReadFilesRequest,
     UpdateFileContentsRequest,
     ProjectFilesResponse,
-    RestResponse,
     # Compile operations
     CreateCompileRequest,
     ReadCompileRequest,
@@ -23,7 +22,7 @@ from models import (
     BacktestResponse,
     # AI operations
     SearchRequest,
-    SearchResponse
+    SearchResponse,
 )
 from organization_workspace import OrganizationWorkspace
 
@@ -75,41 +74,38 @@ mcp = FastMCP("quantconnect-minimal", instructions, host=host, port=port)
 
 logger.info("📋 Starting MINIMAL tool registration process...")
 
+
 # Register only the 8 specified tools
 def register_minimal_tools(mcp):
     """Register only the 8 essential tools for the minimal server."""
 
     # 1. read_file
-    @mcp.tool(annotations={'title': 'Read file', 'readOnlyHint': True})
+    @mcp.tool(annotations={"title": "Read file", "readOnlyHint": True})
     async def read_file(model: ReadFilesRequest) -> ProjectFilesResponse:
         """Read a file from a project, or all files in the project if
         no file name is provided.
         """
-        return await post('/files/read', add_code_source_id(model))
+        return await post("/files/read", add_code_source_id(model))
 
     # 2. update_file_contents
-    @mcp.tool(
-        annotations={'title': 'Update file contents', 'idempotentHint': True}
-    )
+    @mcp.tool(annotations={"title": "Update file contents", "idempotentHint": True})
     async def update_file_contents(
-            model: UpdateFileContentsRequest) -> ProjectFilesResponse:
+        model: UpdateFileContentsRequest,
+    ) -> ProjectFilesResponse:
         """Update the contents of a file."""
-        return await post('/files/update', add_code_source_id(model))
+        return await post("/files/update", add_code_source_id(model))
 
     # 3. create_compile
-    @mcp.tool(
-        annotations={'title': 'Create compile', 'destructiveHint': False}
-    )
-    async def create_compile(
-            model: CreateCompileRequest) -> CreateCompileResponse:
+    @mcp.tool(annotations={"title": "Create compile", "destructiveHint": False})
+    async def create_compile(model: CreateCompileRequest) -> CreateCompileResponse:
         """Asynchronously create a compile job request for a project."""
-        return await post('/compile/create', model)
+        return await post("/compile/create", model)
 
     # 4. read_compile
-    @mcp.tool(annotations={'title': 'Read compile', 'readOnlyHint': True})
+    @mcp.tool(annotations={"title": "Read compile", "readOnlyHint": True})
     async def read_compile(model: ReadCompileRequest) -> ReadCompileResponse:
         """Read a compile packet job result."""
-        return await post('/compile/read', model)
+        return await post("/compile/read", model)
 
     # 5. create_backtest_brief
     @mcp.tool(annotations={"title": "Create backtest brief", "destructiveHint": False})
@@ -121,7 +117,7 @@ def register_minimal_tools(mcp):
             return {
                 "backtestId": response["backtestId"],
                 "status": response["status"],
-                "success": response.get("success", True)
+                "success": response.get("success", True),
             }
         return response
 
@@ -131,9 +127,7 @@ def register_minimal_tools(mcp):
         """Read a brief summary of backtest results containing only status, error, and hasInitializeError."""
         response = await post("/backtests/read", model)
         # Create a simplified response with only the required fields
-        brief_response = {
-            "success": response.get("success", False)
-        }
+        brief_response = {"success": response.get("success", False)}
 
         if "status" in response:
             brief_response["status"] = response["status"]
@@ -150,9 +144,7 @@ def register_minimal_tools(mcp):
         """Read key performance statistics from backtest results."""
         response = await post("/backtests/read", model)
         # Create a simplified response with only the key statistics
-        stats_response = {
-            "success": response.get("success", False)
-        }
+        stats_response = {"success": response.get("success", False)}
 
         if "statistics" in response:
             # Include only essential performance metrics
@@ -167,7 +159,7 @@ def register_minimal_tools(mcp):
                 "TotalPerformance.PortfolioStatistics.TotalReturn",
                 "TotalPerformance.PortfolioStatistics.TotalTrades",
                 "TotalPerformance.PortfolioStatistics.WinRate",
-                "TotalPerformance.PortfolioStatistics.ProfitLossRatio"
+                "TotalPerformance.PortfolioStatistics.ProfitLossRatio",
             ]
 
             for metric in key_metrics:
@@ -179,18 +171,21 @@ def register_minimal_tools(mcp):
         return stats_response
 
     # 8. search_quantconnect
-    @mcp.tool(annotations={'title': 'Search QuantConnect', 'readOnlyHint': True})
+    @mcp.tool(annotations={"title": "Search QuantConnect", "readOnlyHint": True})
     async def search_quantconnect(model: SearchRequest) -> SearchResponse:
         """Search for content in QuantConnect."""
-        return await post('/ai/tools/search', model)
+        return await post("/ai/tools/search", model)
 
     logger.info("✅ Registered 8 essential tools for minimal server")
+
 
 # Register the minimal tools
 register_minimal_tools(mcp)
 
 logger.info("✅ MINIMAL tool registration process completed successfully")
-logger.info("🔒 Security: Only 8 essential tools exposed (88% reduction from full server)")
+logger.info(
+    "🔒 Security: Only 8 essential tools exposed (88% reduction from full server)"
+)
 
 if __name__ == "__main__":
     # Load the organization workspace.
