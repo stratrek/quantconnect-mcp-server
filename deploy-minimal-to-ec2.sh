@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # QuantConnect MCP MINIMAL Server EC2 Deployment Script
-# Deploys the minimal version (8 tools only) to a NEW EC2 instance
+# Deploys the minimal version (9 tools only) to a NEW EC2 instance
 
 set -e  # Exit on any error
 
@@ -45,7 +45,7 @@ run_remote() {
 
 echo "🚀 QuantConnect MCP MINIMAL Server EC2 Deployment"
 echo "=================================================="
-echo "🔒 This deploys ONLY 8 essential tools (88% reduction)"
+echo "🔒 This deploys ONLY 9 essential tools (87% reduction)"
 
 # Check if IP is still placeholder
 if [[ "$EC2_INSTANCE_IP" == "PLACEHOLDER_IP" ]]; then

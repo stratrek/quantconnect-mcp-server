@@ -3,10 +3,13 @@ import os
 from datetime import datetime
 from mcp.server.fastmcp import FastMCP
 
-# Import only the tools we need for the minimal server
+# Import dependencies for the 9 minimal tools
 from api_connection import post
 from code_source_id import add_code_source_id
 from models import (
+    # Project operations
+    CreateProjectRequest,
+    ProjectListResponse,
     # File operations
     ReadFilesRequest,
     UpdateFileContentsRequest,
@@ -20,6 +23,8 @@ from models import (
     CreateBacktestRequest,
     ReadBacktestRequest,
     BacktestResponse,
+    BacktestResult,
+    StatisticsResult,
     # AI operations
     SearchRequest,
     SearchResponse,
@@ -55,7 +60,7 @@ logger.info(f"👤 User ID: {os.getenv('QUANTCONNECT_USER_ID', 'Not set')}")
 logger.info(
     f"🔑 API Token: {'✅ Set' if os.getenv('QUANTCONNECT_API_TOKEN') else '❌ Not set'}"
 )
-logger.info("🔧 MINIMAL SERVER - Only 8 tools exposed")
+logger.info("🔧 MINIMAL SERVER - Only 9 tools exposed")
 logger.info("=" * 60)
 
 # Get configuration from environment variables
@@ -75,116 +80,209 @@ mcp = FastMCP("quantconnect-minimal", instructions, host=host, port=port)
 logger.info("📋 Starting MINIMAL tool registration process...")
 
 
-# Register only the 8 specified tools
 def register_minimal_tools(mcp):
-    """Register only the 8 essential tools for the minimal server."""
+    """Register only the 9 essential tools for the minimal server.
+    Each tool is copied exactly from its original implementation.
+    """
 
-    # 1. read_file
-    @mcp.tool(annotations={"title": "Read file", "readOnlyHint": True})
+    # 1. create_project (from tools/project.py)
+    @mcp.tool(
+        annotations={
+            'title': 'Create project',
+            'destructiveHint': False,
+            'idempotentHint': False
+        }
+    )
+    async def create_project(model: CreateProjectRequest) -> ProjectListResponse:
+        """Create a new project in your default organization."""
+        return await post('/projects/create', model)
+
+    # 2. read_file (from tools/files.py)
+    @mcp.tool(annotations={'title': 'Read file', 'readOnlyHint': True})
     async def read_file(model: ReadFilesRequest) -> ProjectFilesResponse:
         """Read a file from a project, or all files in the project if
         no file name is provided.
         """
-        return await post("/files/read", add_code_source_id(model))
+        return await post('/files/read', add_code_source_id(model))
 
-    # 2. update_file_contents
-    @mcp.tool(annotations={"title": "Update file contents", "idempotentHint": True})
+    # 3. update_file_contents (from tools/files.py)
+    @mcp.tool(
+        annotations={'title': 'Update file contents', 'idempotentHint': True}
+    )
     async def update_file_contents(
-        model: UpdateFileContentsRequest,
-    ) -> ProjectFilesResponse:
+            model: UpdateFileContentsRequest) -> ProjectFilesResponse:
         """Update the contents of a file."""
-        return await post("/files/update", add_code_source_id(model))
+        return await post('/files/update', add_code_source_id(model))
 
-    # 3. create_compile
-    @mcp.tool(annotations={"title": "Create compile", "destructiveHint": False})
-    async def create_compile(model: CreateCompileRequest) -> CreateCompileResponse:
+    # 4. create_compile (from tools/compile.py)
+    @mcp.tool(
+        annotations={'title': 'Create compile', 'destructiveHint': False}
+    )
+    async def create_compile(
+            model: CreateCompileRequest) -> CreateCompileResponse:
         """Asynchronously create a compile job request for a project."""
-        return await post("/compile/create", model)
+        return await post('/compile/create', model)
 
-    # 4. read_compile
-    @mcp.tool(annotations={"title": "Read compile", "readOnlyHint": True})
+    # 5. read_compile (from tools/compile.py)
+    @mcp.tool(annotations={'title': 'Read compile', 'readOnlyHint': True})
     async def read_compile(model: ReadCompileRequest) -> ReadCompileResponse:
         """Read a compile packet job result."""
-        return await post("/compile/read", model)
+        return await post('/compile/read', model)
 
-    # 5. create_backtest_brief
+    # 6. create_backtest_brief (from tools/backtests.py)
     @mcp.tool(annotations={"title": "Create backtest brief", "destructiveHint": False})
     async def create_backtest_brief(model: CreateBacktestRequest) -> BacktestResponse:
         """Create a new backtest request and get only the essential fields (backtestId and status)."""
         response = await post("/backtests/create", model)
-        # Create a simplified response with only the essential fields
-        if "backtestId" in response and "status" in response:
-            return {
-                "backtestId": response["backtestId"],
-                "status": response["status"],
-                "success": response.get("success", True),
-            }
-        return response
 
-    # 6. read_backtest_brief
+        # Create a simplified response with only the essential fields
+        # The API response is a dict, not an object with attributes
+        # Must check success=True before proceeding
+        if (
+            isinstance(response, dict)
+            and response.get("success")
+            and "backtest" in response
+            and response["backtest"]
+        ):
+            backtest_data = response["backtest"]
+            simplified_result = BacktestResult(
+                backtestId=backtest_data["backtestId"], status=backtest_data["status"]
+            )
+
+            # Return the simplified response
+            return BacktestResponse(
+                backtest=simplified_result,
+                success=response["success"],
+                errors=response.get("errors", []),
+            )
+
+        # If API call failed or no backtest data, return actual errors from API
+        api_errors = []
+        if isinstance(response, dict):
+            # Extract errors from API response if available
+            api_errors = response.get("errors", [])
+            if not api_errors and not response.get("success"):
+                api_errors = ["API call failed but no specific error provided"]
+
+        if not api_errors:
+            api_errors = ["No backtest data available"]
+
+        return BacktestResponse(backtest=None, success=False, errors=api_errors)
+
+    # 7. read_backtest_brief (from tools/backtests.py)
     @mcp.tool(annotations={"title": "Read backtest brief", "readOnlyHint": True})
     async def read_backtest_brief(model: ReadBacktestRequest) -> BacktestResponse:
         """Read a brief summary of backtest results containing only status, error, and hasInitializeError."""
         response = await post("/backtests/read", model)
+
         # Create a simplified response with only the required fields
-        brief_response = {"success": response.get("success", False)}
+        # The API response is a dict, not an object with attributes
+        # Must check success=True before proceeding
+        if (
+            isinstance(response, dict)
+            and response.get("success")
+            and "backtest" in response
+            and response["backtest"]
+        ):
+            backtest_data = response["backtest"]
+            simplified_result = BacktestResult(
+                status=backtest_data["status"],
+                error=backtest_data["error"],
+                hasInitializeError=backtest_data["hasInitializeError"],
+            )
 
-        if "status" in response:
-            brief_response["status"] = response["status"]
-        if "error" in response:
-            brief_response["error"] = response["error"]
-        if "hasInitializeError" in response:
-            brief_response["hasInitializeError"] = response["hasInitializeError"]
+            # Return the simplified response
+            return BacktestResponse(
+                backtest=simplified_result,
+                success=response["success"],
+                errors=response.get("errors", []),
+            )
 
-        return brief_response
+        # If API call failed or no backtest data, return actual errors from API
+        api_errors = []
+        if isinstance(response, dict):
+            # Extract errors from API response if available
+            api_errors = response.get("errors", [])
+            if not api_errors and not response.get("success"):
+                api_errors = ["API call failed but no specific error provided"]
 
-    # 7. read_backtest_statistics
+        if not api_errors:
+            api_errors = ["No backtest data available"]
+
+        return BacktestResponse(backtest=None, success=False, errors=api_errors)
+
+    # 8. read_backtest_statistics (from tools/backtests.py)
     @mcp.tool(annotations={"title": "Read backtest statistics", "readOnlyHint": True})
     async def read_backtest_statistics(model: ReadBacktestRequest) -> BacktestResponse:
         """Read key performance statistics from backtest results."""
         response = await post("/backtests/read", model)
+
         # Create a simplified response with only the key statistics
-        stats_response = {"success": response.get("success", False)}
+        # The API response is a dict, not an object with attributes
+        # Must check success=True before proceeding
+        if (
+            isinstance(response, dict)
+            and response.get("success")
+            and "backtest" in response
+            and response["backtest"]
+        ):
+            backtest_data = response["backtest"]
 
-        if "statistics" in response:
-            # Include only essential performance metrics
-            essential_stats = {}
-            stats = response["statistics"]
+            # Build simplified result with key statistics only
+            simplified_result = BacktestResult(
+                # Basic identification and status
+                backtestId=backtest_data.get("backtestId"),
+                status=backtest_data.get("status"),
+                completed=backtest_data.get("completed"),
+                error=backtest_data.get("error"),
+                # Time information
+                backtestStart=backtest_data.get("backtestStart"),
+                backtestEnd=backtest_data.get("backtestEnd"),
+                tradeableDates=backtest_data.get("tradeableDates"),
+            )
 
-            # Key performance metrics
-            key_metrics = [
-                "TotalPerformance.PortfolioStatistics.SharpeRatio",
-                "TotalPerformance.PortfolioStatistics.CompoundingAnnualReturn",
-                "TotalPerformance.PortfolioStatistics.Drawdown",
-                "TotalPerformance.PortfolioStatistics.TotalReturn",
-                "TotalPerformance.PortfolioStatistics.TotalTrades",
-                "TotalPerformance.PortfolioStatistics.WinRate",
-                "TotalPerformance.PortfolioStatistics.ProfitLossRatio",
-            ]
+            # Extract statistics if available - let Pydantic handle the field aliases
+            if "statistics" in backtest_data and backtest_data["statistics"]:
+                stats = backtest_data["statistics"]
+                # Pass the statistics data directly to StatisticsResult
+                # Pydantic will automatically map aliases like "Total Orders" to Total_Orders
+                simplified_result.statistics = StatisticsResult(**stats)
 
-            for metric in key_metrics:
-                if metric in stats:
-                    essential_stats[metric] = stats[metric]
+            # Return the simplified response
+            return BacktestResponse(
+                backtest=simplified_result,
+                success=response["success"],
+                errors=response.get("errors", []),
+            )
 
-            stats_response["statistics"] = essential_stats
+        # If API call failed or no backtest data, return actual errors from API
+        api_errors = []
+        if isinstance(response, dict):
+            # Extract errors from API response if available
+            api_errors = response.get("errors", [])
+            if not api_errors and not response.get("success"):
+                api_errors = ["API call failed but no specific error provided"]
 
-        return stats_response
+        if not api_errors:
+            api_errors = ["No backtest data available"]
 
-    # 8. search_quantconnect
-    @mcp.tool(annotations={"title": "Search QuantConnect", "readOnlyHint": True})
+        return BacktestResponse(backtest=None, success=False, errors=api_errors)
+
+    # 9. search_quantconnect (from tools/ai.py)
+    @mcp.tool(annotations={'title': 'Search QuantConnect', 'readOnlyHint': True})
     async def search_quantconnect(model: SearchRequest) -> SearchResponse:
         """Search for content in QuantConnect."""
-        return await post("/ai/tools/search", model)
+        return await post('/ai/tools/search', model)
 
-    logger.info("✅ Registered 8 essential tools for minimal server")
+    logger.info("✅ Registered 9 essential tools for minimal server")
 
 
 # Register the minimal tools
 register_minimal_tools(mcp)
 
-logger.info("✅ MINIMAL tool registration process completed successfully")
+logger.info("✅ Tool registration process completed successfully")
 logger.info(
-    "🔒 Security: Only 8 essential tools exposed (88% reduction from full server)"
+    "🔒 Security: Only 9 essential tools exposed (87% reduction from full server)"
 )
 
 if __name__ == "__main__":

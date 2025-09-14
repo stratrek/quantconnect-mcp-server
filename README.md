@@ -77,7 +77,7 @@ For improved LLM performance and reduced token usage, we've added lightweight "b
 
 These tools are designed to reduce API response size by 90%+ compared to their full counterparts, making them ideal for AI assistants and automated workflows.
 
-## Available Tools (68)
+## Available Tools (69)
 
 | Tools provided by this Server         | Short Description                                                                                |
 | ------------------------------------- | ------------------------------------------------------------------------------------------------ |
@@ -147,6 +147,7 @@ These tools are designed to reduce API response size by 90%+ compared to their f
 | `update_code_to_pep8`                 | Update Python code to follow PEP8 style.                                                         |
 | `check_syntax`                        | Check the syntax of a code.                                                                      |
 | `search_quantconnect`                 | Search for content in QuantConnect.                                                              |
+| `wait_for_backtest`                   | Poll for backtest completion with configurable timeout and polling interval.                     |
 | `read_mcp_server_version`             | Returns the version of the QC MCP Server that's running.                                         |
 | `read_latest_mcp_server_version`      | Returns the latest version of the QC MCP Server released.                                        |
 

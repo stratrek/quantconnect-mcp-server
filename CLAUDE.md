@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is the **official QuantConnect MCP Server** - a Python-based Model Context Protocol server that enables AI assistants (like Claude) to interact with the QuantConnect platform API. It provides 67+ tools for project management, backtesting, live trading, optimization, and algorithm development.
+This is the **official QuantConnect MCP Server** - a Python-based Model Context Protocol server that enables AI assistants (like Claude) to interact with the QuantConnect platform API. It provides 69 tools for project management, backtesting, live trading, optimization, and algorithm development.
 
 ## Development Commands
 
