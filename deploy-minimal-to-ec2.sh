@@ -199,10 +199,15 @@ run_remote "
     set -e
     cd $DEPLOY_DIR
 
-    # Create .env file for minimal server (will need manual configuration)
-    cat > .env << 'EOF'
+    # Check if .env already exists with credentials
+    if [[ -f .env ]] && grep -q 'QUANTCONNECT_USER_ID=[0-9]' .env; then
+        echo 'Environment file already exists with credentials - keeping existing configuration'
+        cat .env
+    else
+        echo 'Creating environment file with placeholder values...'
+        cat > .env << 'EOF'
 # QuantConnect MCP MINIMAL Server Environment
-# Only 8 tools exposed for security
+# Only 9 tools exposed for security
 
 # Transport Configuration
 MCP_TRANSPORT=http
@@ -217,9 +222,8 @@ MCP_PORT=8001
 # Optional Agent Name
 AGENT_NAME=MCP-Minimal-Server
 EOF
-
-    echo 'Environment template created. Manual configuration required.'
-    echo 'You will need to add your QuantConnect credentials.'
+        echo 'Environment template created.'
+    fi
 "
 
 # Update systemd service configuration for MINIMAL server
@@ -230,7 +234,7 @@ run_remote "
     # Create new systemd service file for minimal server
     sudo tee /etc/systemd/system/$SERVICE_NAME > /dev/null << 'EOF'
 [Unit]
-Description=QuantConnect MCP MINIMAL Server (8 tools only)
+Description=QuantConnect MCP MINIMAL Server (9 tools only)
 After=network.target
 
 [Service]
@@ -257,26 +261,8 @@ EOF
 "
 log_success "MINIMAL server service configured"
 
-# Phase 5: Manual Configuration Pause
-echo ""
-log_warning "MANUAL CONFIGURATION REQUIRED"
-echo "=============================================="
-echo "Before starting the service, you need to:"
-echo "1. Add your QuantConnect credentials to /home/ubuntu/$DEPLOY_DIR/.env"
-echo ""
-echo "Connect to the instance and edit the .env file:"
-echo "ssh -i $SSH_KEY_PATH $EC2_USER@$EC2_INSTANCE_IP"
-echo "cd $DEPLOY_DIR"
-echo "nano .env"
-echo ""
-echo "Add these lines:"
-echo "QUANTCONNECT_USER_ID=your_actual_user_id"
-echo "QUANTCONNECT_API_TOKEN=your_actual_api_token"
-echo ""
-read -p "Press Enter after you've configured the credentials..."
-
-# Phase 6: Service Management
-log_info "Phase 6: MINIMAL Server Service Management"
+# Phase 5: Service Management
+log_info "Phase 5: MINIMAL Server Service Management"
 
 # Start the minimal service
 log_info "Starting MINIMAL server service..."
@@ -297,8 +283,8 @@ run_remote "
 "
 log_success "MINIMAL server service started"
 
-# Phase 7: Verification & Testing
-log_info "Phase 7: MINIMAL Server Verification"
+# Phase 6: Verification & Testing
+log_info "Phase 6: MINIMAL Server Verification"
 
 # Check service health
 log_info "Performing health checks on MINIMAL server..."
@@ -349,7 +335,7 @@ else
 fi
 
 # Test tools list
-log_info "Testing tools list (should show only 8 tools)..."
+log_info "Testing tools list (should show only 9 tools)..."
 TOOLS_TEST=$(curl -s -X POST "http://$EC2_INSTANCE_IP:8001/mcp" \
     -H "Content-Type: application/json" \
     -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' || echo "FAILED")
@@ -368,18 +354,19 @@ echo ""
 log_success "QuantConnect MCP MINIMAL server is running on NEW instance"
 echo "📍 Instance: $EC2_INSTANCE_IP (NEW)"
 echo "🌐 Endpoint: http://$EC2_INSTANCE_IP:8001/mcp"
-echo "🔒 Security: Only 8 tools exposed (88% reduction)"
+echo "🔒 Security: Only 9 tools exposed (87% reduction)"
 echo "📁 Deploy Dir: /home/ubuntu/$DEPLOY_DIR"
 echo ""
 echo "🛠️  Available Tools:"
-echo "  1. read_file"
-echo "  2. update_file_contents"
-echo "  3. create_compile"
-echo "  4. read_compile"
-echo "  5. create_backtest_brief"
-echo "  6. read_backtest_brief"
-echo "  7. read_backtest_statistics"
-echo "  8. search_quantconnect"
+echo "  1. create_project"
+echo "  2. read_file"
+echo "  3. update_file_contents"
+echo "  4. create_compile"
+echo "  5. read_compile"
+echo "  6. create_backtest_brief"
+echo "  7. read_backtest_brief"
+echo "  8. read_backtest_statistics"
+echo "  9. search_quantconnect"
 echo ""
 echo "Management Commands:"
 echo "  View logs:    ssh -i $SSH_KEY_PATH $EC2_USER@$EC2_INSTANCE_IP 'sudo journalctl -u $SERVICE_NAME -f'"
