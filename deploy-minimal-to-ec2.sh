@@ -158,6 +158,13 @@ log_info "Cloning repository to NEW EC2 instance..."
 run_remote "
     set -e
 
+    # Backup existing .env file if it exists
+    if [[ -f $DEPLOY_DIR/.env ]]; then
+        echo 'Backing up existing .env file...'
+        cp $DEPLOY_DIR/.env $BACKUP_DIR.env
+        echo 'Environment file backed up to $BACKUP_DIR.env'
+    fi
+
     # Remove existing deployment directory if it exists
     if [[ -d $DEPLOY_DIR ]]; then
         echo 'Removing existing deployment directory...'
@@ -199,12 +206,19 @@ run_remote "
     set -e
     cd $DEPLOY_DIR
 
-    # Check if .env already exists with credentials
-    if [[ -f .env ]] && grep -q 'QUANTCONNECT_USER_ID=[0-9]' .env; then
-        echo 'Environment file already exists with credentials - keeping existing configuration'
-        cat .env
+    # Try to restore credentials from backup
+    if [[ -f $BACKUP_DIR.env ]] && grep -q 'QUANTCONNECT_USER_ID=[0-9]' $BACKUP_DIR.env; then
+        echo 'Restoring environment configuration from backup...'
+        cp $BACKUP_DIR.env .env
+        echo 'Environment configuration restored from backup'
+        sed 's/=.*/=***/' .env
+    elif [[ -f ../stratrek-quantconnect-mcp-server/.env ]] && grep -q 'QUANTCONNECT_USER_ID=[0-9]' ../stratrek-quantconnect-mcp-server/.env; then
+        echo 'Copying environment configuration from full server deployment...'
+        cp ../stratrek-quantconnect-mcp-server/.env .env
+        echo 'Environment configuration copied from full server'
+        sed 's/=.*/=***/' .env
     else
-        echo 'Creating environment file with placeholder values...'
+        echo 'No existing credentials found. Creating environment template...'
         cat > .env << 'EOF'
 # QuantConnect MCP MINIMAL Server Environment
 # Only 9 tools exposed for security
@@ -222,7 +236,8 @@ MCP_PORT=8001
 # Optional Agent Name
 AGENT_NAME=MCP-Minimal-Server
 EOF
-        echo 'Environment template created.'
+        echo 'Environment template created. Manual configuration required.'
+        echo 'You will need to add your QuantConnect credentials to the .env file.'
     fi
 "
 
@@ -260,6 +275,42 @@ EOF
     echo 'Systemd reloaded'
 "
 log_success "MINIMAL server service configured"
+
+# Check if manual configuration is needed
+run_remote "
+    set -e
+    cd $DEPLOY_DIR
+
+    # Check if credentials are properly configured
+    if grep -q 'QUANTCONNECT_USER_ID=[0-9]' .env && grep -q 'QUANTCONNECT_API_TOKEN=[a-f0-9]' .env; then
+        echo 'Credentials are properly configured - proceeding with service start'
+        echo 'CREDENTIALS_OK=true' > /tmp/credentials_status
+    else
+        echo 'Credentials need manual configuration'
+        echo 'CREDENTIALS_OK=false' > /tmp/credentials_status
+    fi
+"
+
+# Get credential status
+CREDENTIALS_STATUS=$(ssh -i "$SSH_KEY_PATH" -o StrictHostKeyChecking=no "$EC2_USER@$EC2_INSTANCE_IP" "cat /tmp/credentials_status | cut -d'=' -f2")
+
+if [[ "$CREDENTIALS_STATUS" == "false" ]]; then
+    echo ""
+    log_warning "MANUAL CONFIGURATION REQUIRED"
+    echo "=============================================="
+    echo "Credentials need to be configured before starting the service."
+    echo ""
+    echo "Connect to the instance and edit the .env file:"
+    echo "ssh -i $SSH_KEY_PATH $EC2_USER@$EC2_INSTANCE_IP"
+    echo "cd $DEPLOY_DIR"
+    echo "nano .env"
+    echo ""
+    echo "Add these lines:"
+    echo "QUANTCONNECT_USER_ID=your_actual_user_id"
+    echo "QUANTCONNECT_API_TOKEN=your_actual_api_token"
+    echo ""
+    read -p "Press Enter after you've configured the credentials..."
+fi
 
 # Phase 5: Service Management
 log_info "Phase 5: MINIMAL Server Service Management"
@@ -375,3 +426,10 @@ echo "  Service status: ssh -i $SSH_KEY_PATH $EC2_USER@$EC2_INSTANCE_IP 'sudo sy
 echo "  Restart:      ssh -i $SSH_KEY_PATH $EC2_USER@$EC2_INSTANCE_IP 'sudo systemctl restart $SERVICE_NAME'"
 echo ""
 log_info "Test with: curl -X POST http://$EC2_INSTANCE_IP:8001/mcp -H 'Content-Type: application/json' -d '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\"}'"
+
+# Cleanup temporary files
+run_remote "
+    # Clean up temporary files
+    rm -f /tmp/credentials_status
+    rm -f $BACKUP_DIR.env 2>/dev/null || true
+"
