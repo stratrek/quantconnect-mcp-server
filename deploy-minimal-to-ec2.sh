@@ -302,17 +302,18 @@ run_remote "
     fi
 
     # Get the configured port
+    cd $DEPLOY_DIR
     MCP_PORT=\$(grep '^MCP_PORT=' .env | cut -d'=' -f2 || echo '8001')
     echo \"MINIMAL server port: \$MCP_PORT\"
 
     # Check if port is listening
     sleep 3
-    if netstat -tlnp 2>/dev/null | grep -q \":\$MCP_PORT\"; then
+    if ss -tlnp | grep -q \":\$MCP_PORT\"; then
         echo \"MINIMAL server listening on port \$MCP_PORT ✅\"
     else
         echo \"MINIMAL server not listening on port \$MCP_PORT ❌\"
         echo 'Open ports:'
-        netstat -tlnp 2>/dev/null | grep LISTEN || true
+        ss -tlnp | grep LISTEN || true
         exit 1
     fi
 "
